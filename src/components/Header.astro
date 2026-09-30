@@ -57,8 +57,9 @@ const drawerLinks = [
     <div class="actions">
       <a class="status" href={route('kontakt', lang)} data-status title={tx.status.ortszeit}>
         <span class="pulse-dot" aria-hidden="true"></span>
-        <span class="status-city">{profil.stadt}</span>
+        <span class="status-city">{profil.stadt}</span>{' '}
         <time class="status-time" data-clock></time>
+        <span class="sr-only">({tx.status.ortszeit}, <span data-status-text>{tx.status.erreichbar}</span>)</span>
       </a>
       <button class="search-btn" type="button" data-palette-open aria-label={tx.nav.suche} title={tx.nav.suche_lang} aria-keyshortcuts="Control+K Meta+K">
         <Icon name="search" size={17} />

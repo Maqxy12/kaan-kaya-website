@@ -105,9 +105,6 @@ const tick = () => {
   });
   document.querySelectorAll<HTMLElement>('[data-status]').forEach((el) => {
     el.dataset.available = String(ok);
-    // Sichtbarer Text steht vorne (WCAG 2.5.3 „Label in Name“)
-    const sichtbar = [...el.children].map((c) => c.textContent?.trim()).filter(Boolean).join(' ');
-    if (el.matches('a')) el.setAttribute('aria-label', `${sichtbar} – ${config.texte.ortszeit}, ${ok ? config.texte.erreichbar : config.texte.offline}`);
     el.title = ok ? config.texte.erreichbar : config.texte.offline;
   });
   document.querySelectorAll<HTMLElement>('[data-status-text]').forEach((el) => {
