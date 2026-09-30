@@ -1,0 +1,8 @@
+# Netlify-Konfiguration (wird genutzt, wenn Netlify die Seite selbst baut, z. B. über GitHub).
+# Sicherheits-Header und Weiterleitungen stehen in public/_headers und public/_redirects.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

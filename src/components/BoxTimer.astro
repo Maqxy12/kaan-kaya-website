@@ -1,0 +1,752 @@
+---
+/**
+ * Box-Timer: Rundentimer fürs Boxtraining.
+ * Töne werden live im Browser erzeugt (Web Audio) – keine Audiodateien nötig.
+ */
+import Icon from './Icon.astro';
+import { t } from '../lib/texte';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const b = t(lang).boxtimer;
+const felder = [
+  { key: 'runden', label: b.runden },
+  { key: 'rundenzeit', label: b.rundenzeit },
+  { key: 'pause', label: b.pause },
+  { key: 'vorbereitung', label: b.vorbereitung },
+] as const;
+---
+<div class="bt" data-boxtimer data-phase="bereit" data-texte={JSON.stringify(b)}>
+  <section class="card stage" data-stage aria-label={b.seo_titel}>
+    <div class="stage-top">
+      <span class="phase" data-phase-label>{b.phase_bereit}</span>
+      <span class="round" data-round></span>
+    </div>
+
+    <div class="dial">
+      <svg viewBox="0 0 200 200" class="ring" aria-hidden="true">
+        <circle class="track" cx="100" cy="100" r="90" />
+        <circle class="bar" data-bar cx="100" cy="100" r="90" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="0" />
+      </svg>
+      <div class="dial-inner">
+        <div class="time" role="timer" aria-atomic="true" data-time>3:00</div>
+        <div class="sub" data-sub></div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button type="button" class="icon-btn ctl" data-reset aria-label={b.zuruecksetzen} title={b.zuruecksetzen}>
+        <Icon name="rotate-ccw" size={22} />
+      </button>
+      <button type="button" class="main" data-main>
+        <Icon name="play" size={22} class="i-play" />
+        <Icon name="pause" size={22} class="i-pause" />
+        <span data-main-label>{b.start}</span>
+      </button>
+      <button type="button" class="icon-btn ctl" data-sound aria-pressed="true" aria-label={b.ton_an} title={b.ton_an}>
+        <Icon name="volume-2" size={22} class="i-on" />
+        <Icon name="volume-x" size={22} class="i-off" />
+      </button>
+      <button type="button" class="icon-btn ctl" data-fullscreen aria-label={b.vollbild} title={b.vollbild} hidden>
+        <Icon name="maximize" size={20} />
+      </button>
+    </div>
+    <p class="sr-only" aria-live="polite" data-live></p>
+    <noscript><p class="nojs">{b.kein_js}</p></noscript>
+  </section>
+
+  <section class="card settings" aria-labelledby="bt-settings">
+    <h2 id="bt-settings" class="h3">{b.einstellungen}</h2>
+    <div class="rows">
+      {
+        felder.map((f) => (
+          <div class="row" data-feld={f.key}>
+            <span class="row-label" id={`bt-${f.key}`}>{f.label}</span>
+            <div class="stepper" role="group" aria-labelledby={`bt-${f.key}`}>
+              <button type="button" class="step" data-step="-1" aria-label={`${f.label}: ${b.weniger}`}>
+                <Icon name="minus" size={18} />
+              </button>
+              <output class="value" data-value aria-live="polite" />
+              <button type="button" class="step" data-step="1" aria-label={`${f.label}: ${b.mehr}`}>
+                <Icon name="plus" size={18} />
+              </button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+    <p class="total">
+      <Icon name="timer" size={16} />
+      {b.gesamt}: <strong data-total></strong>
+    </p>
+  </section>
+</div>
+
+<script>
+  type Texte = Record<string, string>;
+  type Typ = 'vorbereitung' | 'runde' | 'pause';
+  interface Phase {
+    typ: Typ;
+    dauer: number;
+    nr?: number;
+  }
+
+  const OPTIONEN = {
+    runden: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15],
+    rundenzeit: [60, 90, 120, 150, 180, 240, 300],
+    pause: [15, 30, 45, 60, 90, 120],
+    vorbereitung: [0, 5, 10, 15, 30],
+  } as const;
+  type Feld = keyof typeof OPTIONEN;
+  const STANDARD: Record<Feld, number> = { runden: 3, rundenzeit: 180, pause: 60, vorbereitung: 10 };
+
+  const speicher = {
+    lesen<T>(k: string, fallback: T): T {
+      try {
+        const v = localStorage.getItem(k);
+        return v ? { ...fallback, ...JSON.parse(v) } : fallback;
+      } catch {
+        return fallback;
+      }
+    },
+    schreiben(k: string, v: unknown) {
+      try {
+        localStorage.setItem(k, JSON.stringify(v));
+      } catch {
+        /* egal */
+      }
+    },
+  };
+
+  const mmss = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+  /* ── Töne (Web Audio, live erzeugt) ── */
+  let ctx: AudioContext | null = null;
+  let tonAn = true;
+  const audio = () => {
+    if (!ctx) ctx = new AudioContext();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  };
+  function glocke(zeit = 0) {
+    if (!tonAn) return;
+    const c = audio();
+    const t0 = c.currentTime + zeit;
+    const master = c.createGain();
+    master.gain.setValueAtTime(0.0001, t0);
+    master.gain.exponentialRampToValueAtTime(0.5, t0 + 0.005);
+    master.gain.exponentialRampToValueAtTime(0.0001, t0 + 2.4);
+    master.connect(c.destination);
+    for (const [faktor, lautst] of [[1, 1], [2.76, 0.45], [5.4, 0.22], [8.93, 0.12]]) {
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = 'sine';
+      o.frequency.value = 1040 * faktor;
+      g.gain.value = lautst;
+      o.connect(g).connect(master);
+      o.start(t0);
+      o.stop(t0 + 2.5);
+    }
+  }
+  const glocken = (n: number) => {
+    for (let i = 0; i < n; i++) glocke(i * 0.45);
+  };
+  function klack(zeit = 0) {
+    if (!tonAn) return;
+    const c = audio();
+    const t0 = c.currentTime + zeit;
+    const len = Math.floor(c.sampleRate * 0.06);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const src = c.createBufferSource();
+    const filter = c.createBiquadFilter();
+    const g = c.createGain();
+    src.buffer = buf;
+    filter.type = 'bandpass';
+    filter.frequency.value = 2400;
+    filter.Q.value = 1.2;
+    g.gain.value = 1.4;
+    src.connect(filter).connect(g).connect(c.destination);
+    src.start(t0);
+  }
+  function piep(hoch = false) {
+    if (!tonAn) return;
+    const c = audio();
+    const t0 = c.currentTime;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = 'sine';
+    o.frequency.value = hoch ? 1320 : 880;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.35, t0 + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.16);
+    o.connect(g).connect(c.destination);
+    o.start(t0);
+    o.stop(t0 + 0.2);
+  }
+  const vibrieren = (muster: number[]) => navigator.vibrate?.(muster);
+
+  /* ── Bildschirm anlassen ── */
+  let wakeLock: WakeLockSentinel | null = null;
+  const bildschirmAn = async () => {
+    try {
+      wakeLock = (await navigator.wakeLock?.request('screen')) ?? null;
+    } catch {
+      /* nicht unterstützt */
+    }
+  };
+  const bildschirmFrei = () => {
+    wakeLock?.release().catch(() => {});
+    wakeLock = null;
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-boxtimer]').forEach((root) => {
+    const T: Texte = JSON.parse(root.dataset.texte!);
+    const $ = <E extends Element>(sel: string) => root.querySelector<E>(sel)!;
+    const zeitEl = $<HTMLElement>('[data-time]');
+    const subEl = $<HTMLElement>('[data-sub]');
+    const phaseEl = $<HTMLElement>('[data-phase-label]');
+    const rundeEl = $<HTMLElement>('[data-round]');
+    const bar = $<SVGCircleElement>('[data-bar]');
+    const mainBtn = $<HTMLButtonElement>('[data-main]');
+    const mainLabel = $<HTMLElement>('[data-main-label]');
+    const resetBtn = $<HTMLButtonElement>('[data-reset]');
+    const tonBtn = $<HTMLButtonElement>('[data-sound]');
+    const vollBtn = $<HTMLButtonElement>('[data-fullscreen]');
+    const live = $<HTMLElement>('[data-live]');
+    const totalEl = $<HTMLElement>('[data-total]');
+    const stage = $<HTMLElement>('[data-stage]');
+
+    const werte: Record<Feld, number> = speicher.lesen('boxtimer', STANDARD);
+    tonAn = speicher.lesen('boxtimer-ton', { an: true }).an;
+
+    let phasen: Phase[] = [];
+    let index = -1;
+    let ende = 0;
+    let rest = 0;
+    let laeuft = false;
+    let warnungGespielt = false;
+    let letzterPiep = -1;
+    let timer = 0;
+
+    const ansage = (text: string) => {
+      live.textContent = text;
+    };
+    const format = (feld: Feld, v: number) => (feld === 'runden' ? String(v) : v === 0 ? '–' : mmss(v));
+    const gesamt = () =>
+      werte.vorbereitung + werte.runden * werte.rundenzeit + (werte.runden - 1) * werte.pause;
+
+    function einstellungenZeigen() {
+      root.querySelectorAll<HTMLElement>('[data-feld]').forEach((row) => {
+        const feld = row.dataset.feld as Feld;
+        const opts = OPTIONEN[feld] as readonly number[];
+        const i = opts.indexOf(werte[feld]);
+        row.querySelector('[data-value]')!.textContent = format(feld, werte[feld]);
+        const [minus, plus] = row.querySelectorAll<HTMLButtonElement>('[data-step]');
+        minus.disabled = i <= 0 || index >= 0;
+        plus.disabled = i >= opts.length - 1 || index >= 0;
+      });
+      totalEl.textContent = mmss(gesamt());
+      if (index < 0) {
+        zeitEl.textContent = mmss(werte.rundenzeit);
+        rundeEl.textContent = `${T.runden}: ${werte.runden}`;
+        subEl.textContent = `${T.gesamt} ${mmss(gesamt())}`;
+      }
+    }
+
+    root.querySelectorAll<HTMLElement>('[data-feld]').forEach((row) => {
+      const feld = row.dataset.feld as Feld;
+      row.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const opts = OPTIONEN[feld] as readonly number[];
+          const i = Math.max(0, opts.indexOf(werte[feld]));
+          const neu = opts[Math.min(opts.length - 1, Math.max(0, i + Number(btn.dataset.step)))];
+          werte[feld] = neu;
+          speicher.schreiben('boxtimer', werte);
+          einstellungenZeigen();
+        }),
+      );
+    });
+
+    function phasenBauen(): Phase[] {
+      const p: Phase[] = [];
+      if (werte.vorbereitung > 0) p.push({ typ: 'vorbereitung', dauer: werte.vorbereitung });
+      for (let nr = 1; nr <= werte.runden; nr++) {
+        p.push({ typ: 'runde', dauer: werte.rundenzeit, nr });
+        if (nr < werte.runden) p.push({ typ: 'pause', dauer: werte.pause });
+      }
+      return p;
+    }
+
+    // start: Zeitpunkt, an dem die Phase begonnen hat – so geht keine Zeit verloren,
+    // auch wenn das Handy kurz gesperrt war. laut=false: verpasste Phasen still überspringen.
+    function setzePhase(i: number, start = performance.now(), laut = true) {
+      index = i;
+      warnungGespielt = false;
+      letzterPiep = -1;
+      const ph = phasen[i];
+      ende = start + ph.dauer * 1000;
+      const tonVorher = tonAn;
+      if (!laut) tonAn = false;
+      root.dataset.phase = ph.typ;
+      if (ph.typ === 'runde') {
+        phaseEl.textContent = `${T.phase_runde} ${ph.nr}`;
+        rundeEl.textContent = `${T.runde} ${ph.nr} ${T.von} ${werte.runden}`;
+        glocke();
+        vibrieren([300]);
+        ansage(`${T.runde} ${ph.nr} ${T.von} ${werte.runden}`);
+      } else if (ph.typ === 'pause') {
+        phaseEl.textContent = T.phase_pause;
+        const naechste = (phasen[i + 1]?.nr ?? 0);
+        rundeEl.textContent = `${T.runde} ${naechste} ${T.von} ${werte.runden}`;
+        glocken(3);
+        vibrieren([200, 100, 200, 100, 200]);
+        ansage(T.phase_pause);
+      } else {
+        phaseEl.textContent = T.phase_vorbereitung;
+        rundeEl.textContent = `${T.runde} 1 ${T.von} ${werte.runden}`;
+        ansage(T.phase_vorbereitung);
+      }
+      tonAn = tonVorher;
+    }
+
+    function fertig() {
+      stoppeTakt();
+      laeuft = false;
+      index = phasen.length;
+      root.dataset.phase = 'fertig';
+      phaseEl.textContent = T.phase_fertig;
+      zeitEl.textContent = '0:00';
+      subEl.textContent = T.fertig_text;
+      bar.setAttribute('stroke-dashoffset', '0');
+      glocken(3);
+      vibrieren([300, 150, 300, 150, 600]);
+      ansage(`${T.phase_fertig}. ${T.fertig_text}`);
+      bildschirmFrei();
+      knoepfe();
+    }
+
+    function takt() {
+      if (!laeuft) return;
+      const jetzt = performance.now();
+      while (ende <= jetzt) {
+        if (index + 1 >= phasen.length) return fertig();
+        const naechsteDauer = phasen[index + 1].dauer * 1000;
+        setzePhase(index + 1, ende, ende + naechsteDauer > jetzt);
+      }
+      const bleibt = (ende - jetzt) / 1000;
+      const ph = phasen[index];
+      const sek = Math.ceil(bleibt);
+      zeitEl.textContent = mmss(sek);
+      bar.setAttribute('stroke-dashoffset', String(Math.round((1 - bleibt / ph.dauer) * 1000)));
+
+      if (ph.typ === 'runde') {
+        const warn = bleibt <= 10;
+        root.dataset.warn = String(warn);
+        if (warn && !warnungGespielt && ph.dauer > 10) {
+          warnungGespielt = true;
+          klack();
+          klack(0.18);
+          ansage(T.letzte_sekunden);
+        }
+        subEl.textContent = warn ? T.letzte_sekunden : '';
+      } else {
+        root.dataset.warn = 'false';
+        subEl.textContent = '';
+        if (sek <= 3 && sek !== letzterPiep && sek > 0) {
+          letzterPiep = sek;
+          piep();
+        }
+      }
+    }
+
+    const starteTakt = () => {
+      clearInterval(timer);
+      timer = window.setInterval(takt, 100);
+      takt();
+    };
+    const stoppeTakt = () => clearInterval(timer);
+
+    function knoepfe() {
+      root.dataset.running = String(laeuft);
+      mainLabel.textContent = laeuft ? T.pausieren : index >= 0 && index < phasen.length ? T.weiter : T.start;
+      einstellungenZeigen();
+    }
+
+    function startStopp() {
+      audio();
+      if (laeuft) {
+        laeuft = false;
+        rest = ende - performance.now();
+        stoppeTakt();
+        bildschirmFrei();
+      } else {
+        if (index < 0 || index >= phasen.length) {
+          phasen = phasenBauen();
+          setzePhase(0);
+        } else {
+          ende = performance.now() + rest;
+        }
+        laeuft = true;
+        bildschirmAn();
+        starteTakt();
+      }
+      knoepfe();
+    }
+
+    function zuruecksetzen() {
+      stoppeTakt();
+      laeuft = false;
+      index = -1;
+      phasen = [];
+      root.dataset.phase = 'bereit';
+      root.dataset.warn = 'false';
+      phaseEl.textContent = T.phase_bereit;
+      bar.setAttribute('stroke-dashoffset', '0');
+      bildschirmFrei();
+      knoepfe();
+    }
+
+    function tonZeigen() {
+      tonBtn.setAttribute('aria-pressed', String(tonAn));
+      tonBtn.setAttribute('aria-label', tonAn ? T.ton_an : T.ton_aus);
+      tonBtn.title = tonAn ? T.ton_an : T.ton_aus;
+    }
+
+    mainBtn.addEventListener('click', startStopp);
+    resetBtn.addEventListener('click', zuruecksetzen);
+    tonBtn.addEventListener('click', () => {
+      tonAn = !tonAn;
+      speicher.schreiben('boxtimer-ton', { an: tonAn });
+      tonZeigen();
+      if (tonAn) piep(true);
+    });
+    if (document.fullscreenEnabled) {
+      vollBtn.hidden = false;
+      vollBtn.addEventListener('click', () => {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else stage.requestFullscreen().catch(() => {});
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== ' ' || e.target !== document.body) return;
+      e.preventDefault();
+      startStopp();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && laeuft) {
+        bildschirmAn();
+        takt();
+      }
+    });
+
+    tonZeigen();
+    knoepfe();
+  });
+</script>
+
+<style>
+  .bt {
+    display: grid;
+    gap: var(--space-4);
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .bt {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    }
+  }
+
+  /* ── Bühne ── */
+  .stage {
+    --phase: var(--text-subtle);
+    --phase-soft: transparent;
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-5);
+    padding: clamp(1.25rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(70% 60% at 50% 45%, var(--phase-soft), transparent 70%),
+      var(--glass);
+    transition: background-color var(--dur);
+  }
+  .stage:fullscreen {
+    align-content: center;
+    border-radius: 0;
+    background:
+      radial-gradient(70% 60% at 50% 45%, var(--phase-soft), transparent 70%),
+      var(--bg);
+  }
+  [data-phase='vorbereitung'] .stage {
+    --phase: var(--accent-text);
+    --phase-soft: var(--accent-soft);
+  }
+  [data-phase='runde'] .stage {
+    --phase: #22c55e;
+    --phase-soft: rgb(34 197 94 / 0.14);
+  }
+  [data-phase='runde'][data-warn='true'] .stage {
+    --phase: #f59e0b;
+    --phase-soft: rgb(245 158 11 / 0.16);
+  }
+  [data-phase='pause'] .stage {
+    --phase: var(--primary-text);
+    --phase-soft: var(--primary-soft);
+  }
+  [data-phase='fertig'] .stage {
+    --phase: var(--accent-text);
+    --phase-soft: var(--accent-soft);
+  }
+  :global([data-theme='light']) [data-phase='runde'] .stage {
+    --phase: #15803d;
+  }
+  :global([data-theme='light']) [data-phase='runde'][data-warn='true'] .stage {
+    --phase: #b45309;
+  }
+
+  .stage-top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .phase {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--radius-full);
+    border: 1px solid color-mix(in srgb, var(--phase) 40%, transparent);
+    background: color-mix(in srgb, var(--phase) 12%, transparent);
+    color: var(--phase);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .round {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dial {
+    position: relative;
+    width: min(100%, 26rem);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+  .stage:fullscreen .dial {
+    width: min(80vw, 70vh);
+  }
+  .ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .track {
+    fill: none;
+    stroke: var(--surface-3);
+    stroke-width: 8;
+  }
+  .bar {
+    fill: none;
+    stroke: var(--phase);
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition:
+      stroke-dashoffset 100ms linear,
+      stroke var(--dur);
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--phase) 50%, transparent));
+  }
+  [data-phase='bereit'] .bar {
+    stroke: var(--border-strong);
+    filter: none;
+  }
+  .dial-inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 0.25rem;
+    text-align: center;
+  }
+  .time {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 3rem + 7vw, 7.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .stage:fullscreen .time {
+    font-size: min(22vw, 26vh);
+  }
+  .sub {
+    min-height: 1.5em;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--phase);
+  }
+  [data-phase='bereit'] .sub {
+    color: var(--text-subtle);
+  }
+  [data-warn='true'] .time {
+    color: var(--phase);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-warn='true'] .time {
+      animation: warn-pulse 1s ease-in-out infinite;
+    }
+    @keyframes warn-pulse {
+      50% {
+        opacity: 0.55;
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .ctl {
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+  }
+  .main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-width: 9.5rem;
+    height: 4rem;
+    padding: 0 1.75rem;
+    border-radius: var(--radius-full);
+    background: var(--primary-strong);
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 700;
+    box-shadow: 0 10px 30px -10px rgb(37 99 235 / 0.7);
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur);
+  }
+  .main:hover {
+    background: var(--primary);
+  }
+  .main:active {
+    transform: scale(0.97);
+  }
+  [data-running='true'] .main {
+    background: var(--surface-3);
+    color: var(--text);
+    box-shadow: none;
+  }
+  .main :global(.i-pause),
+  [data-running='true'] .main :global(.i-play) {
+    display: none;
+  }
+  [data-running='true'] .main :global(.i-pause) {
+    display: block;
+  }
+  [data-sound] :global(.i-off),
+  [data-sound][aria-pressed='false'] :global(.i-on) {
+    display: none;
+  }
+  [data-sound][aria-pressed='false'] :global(.i-off) {
+    display: block;
+  }
+  .nojs {
+    color: var(--danger);
+    text-align: center;
+  }
+
+  /* ── Einstellungen ── */
+  .settings {
+    display: grid;
+    gap: var(--space-5);
+    padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+    border-radius: var(--radius-xl);
+  }
+  .rows {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .row-label {
+    font-weight: 600;
+  }
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+  }
+  .step {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    color: var(--text);
+    transition: background-color var(--dur);
+  }
+  .step:hover:not(:disabled) {
+    background: var(--surface-3);
+  }
+  .step:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .value {
+    min-width: 3.5rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .total {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius);
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .total strong {
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

@@ -1,0 +1,141 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ProjectCard from '../components/projekte/ProjectCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route, projektPfad } from '../lib/i18n';
+import { projekte, slug } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang).projekte;
+const liste = await projekte(lang);
+const filter = [
+  ['alle', tx.filter.alle, liste.length],
+  ['web', tx.filter.web, liste.filter((p) => p.data.kategorie.includes('web')).length],
+  ['hardware', tx.filter.hardware, liste.filter((p) => p.data.kategorie.includes('hardware')).length],
+  ['spiel', tx.filter.spiel, liste.filter((p) => p.data.kategorie.includes('spiel')).length],
+  ['sport', tx.filter.sport, liste.filter((p) => p.data.kategorie.includes('sport')).length],
+] as const;
+const site = Astro.site!;
+---
+<Base
+  lang={lang}
+  titel={tx.seo_titel}
+  beschreibung={tx.seo_beschreibung}
+  alternates={alternates('projekte')}
+  aktiv="projekte"
+  ogBild={`/og/${lang}/projekte.png`}
+  schema={[
+    {
+      '@type': 'CollectionPage',
+      name: tx.seo_titel,
+      url: new URL(route('projekte', lang), site).href,
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: liste.map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: new URL(projektPfad(lang, slug(p.id)), site).href,
+          name: p.data.titel,
+        })),
+      },
+    },
+  ]}
+>
+  <PageHero eyebrow={tx.eyebrow} titel={tx.titel} intro={tx.intro} />
+
+  <section class="container" aria-label={tx.seo_titel}>
+    <fieldset class="filters">
+      <legend class="sr-only">{tx.filter_label}</legend>
+      {
+        filter.map(([key, label, n], i) => (
+          <label class="filter">
+            <input type="radio" name="filter" value={key} id={`f-${key}`} checked={i === 0} class="sr-only" />
+            <span>
+              {label}
+              <span class="count">{n}</span>
+            </span>
+          </label>
+        ))
+      }
+    </fieldset>
+    <div class="grid">
+      {liste.map((p) => <ProjectCard lang={lang} projekt={p} headingLevel="h2" />)}
+    </div>
+  </section>
+
+  <CtaBand titel={tx.cta_titel} text={tx.cta_text} knopf={tx.cta_knopf} href={route('kontakt', lang)} />
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    border: 0;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+  }
+  .filter span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.45rem 0.6rem 0.45rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color var(--dur),
+      color var(--dur),
+      border-color var(--dur);
+  }
+  .filter span:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .filter .count {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.4rem;
+    justify-content: center;
+    border: 0;
+    background: var(--surface-3);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+  .filter input:checked + span {
+    background: var(--primary-strong);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 8px 24px -10px rgb(37 99 235 / 0.7);
+  }
+  .filter input:checked + span .count {
+    background: rgb(255 255 255 / 0.2);
+    color: #fff;
+  }
+  .filter input:focus-visible + span {
+    outline: 2px solid var(--primary-text);
+    outline-offset: 3px;
+  }
+  .grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  }
+  /* Filter ohne JavaScript – dank :has() */
+  section:has(#f-web:checked) .grid > :global(:not([data-cat~='web'])),
+  section:has(#f-hardware:checked) .grid > :global(:not([data-cat~='hardware'])),
+  section:has(#f-spiel:checked) .grid > :global(:not([data-cat~='spiel'])),
+  section:has(#f-sport:checked) .grid > :global(:not([data-cat~='sport'])) {
+    display: none;
+  }
+</style>

@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const f = t(lang).fehler;
+---
+<Base lang={lang} titel={f.seo_titel} alternates={alternates('start')} noindex>
+  <section class="container ko hero-in">
+    <p class="code" aria-hidden="true">{f.code}</p>
+    <h1 class="h1">{f.titel}</h1>
+    <p class="lead">{f.text}</p>
+    <div class="actions">
+      <a class="btn btn--primary" href={route('start', lang)}>
+        <Icon name="house" size={18} />
+        {f.start}
+      </a>
+      <button class="btn btn--secondary" type="button" data-palette-open>
+        <Icon name="search" size={17} />
+        {f.suche}
+      </button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ko {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-5);
+    padding-block: clamp(3rem, 2rem + 6vw, 8rem);
+  }
+  .code {
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 5rem + 12vw, 13rem);
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--primary-line);
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    opacity: 0.9;
+  }
+  .h1 {
+    max-width: 20ch;
+  }
+  .lead {
+    max-width: 40ch;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+</style>

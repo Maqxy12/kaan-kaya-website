@@ -1,0 +1,17 @@
+---
+interface Props {
+  eyebrow: string;
+  titel: string;
+  intro?: string;
+  id?: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+const { eyebrow, titel, intro, id, as: Tag = 'h2', class: className } = Astro.props;
+---
+<header class:list={['section-head', className]}>
+  <p class="eyebrow">{eyebrow}</p>
+  <Tag id={id} class={Tag === 'h1' ? 'h1' : 'h2'}>{titel}</Tag>
+  {intro && <p class="lead">{intro}</p>}
+  <slot />
+</header>

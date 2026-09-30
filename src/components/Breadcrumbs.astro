@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  items: { label: string; href?: string }[];
+  label: string;
+}
+const { items, label } = Astro.props;
+---
+<nav class="crumbs container" aria-label={label}>
+  <ol role="list">
+    {
+      items.map((item, i) => (
+        <li>
+          {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+          {i < items.length - 1 && <Icon name="chevron-right" size={14} />}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  .crumbs {
+    padding-top: var(--space-6);
+  }
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  a {
+    color: var(--text-muted);
+    transition: color var(--dur);
+  }
+  a:hover {
+    color: var(--text);
+  }
+  [aria-current] {
+    color: var(--text);
+    max-width: 28ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

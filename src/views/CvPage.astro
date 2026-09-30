@@ -1,0 +1,278 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Logo from '../components/Logo.astro';
+import { t, profil, instagramUrl } from '../lib/texte';
+import { type Lang, alternates, cvPdfPfad, formatDatum } from '../lib/i18n';
+import { projekte } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const cv = tx.lebenslauf;
+const s = tx.skills;
+const liste = await projekte(lang);
+const site = Astro.site!;
+const kenntnisse = s.gruppen.map((g) => ({
+  titel: g.titel,
+  items: g.eintraege.filter((e) => e.stufe > 0).map((e) => `${e.name} (${s.stufen[e.stufe]})`),
+  geplant: g.eintraege.filter((e) => e.stufe === 0).map((e) => e.name),
+}));
+const heute = formatDatum(new Date(), lang);
+---
+<Base
+  lang={lang}
+  titel={cv.seo_titel}
+  beschreibung={cv.seo_beschreibung}
+  alternates={alternates('lebenslauf')}
+  aktiv="lebenslauf"
+  ogBild={`/og/${lang}/lebenslauf.png`}
+>
+  <div class="container toolbar no-print">
+    <h1 class="h2">{cv.titel}</h1>
+    <div class="actions">
+      <a class="btn btn--primary btn--sm" href={cvPdfPfad(lang)} download>
+        <Icon name="download" size={16} />
+        {cv.pdf}
+      </a>
+      <button class="btn btn--secondary btn--sm" type="button" data-print>
+        <Icon name="printer" size={16} />
+        {cv.drucken}
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <article class="paper" aria-label={cv.titel}>
+      <header class="cv-head">
+        <div>
+          <p class="cv-name">{profil.name}</p>
+          <p class="cv-role">{tx.meta.rolle}</p>
+        </div>
+        <Logo size={44} class="cv-logo" />
+        <ul class="cv-contact" role="list">
+          <li><Icon name="map-pin" size={14} />{tx.kontakt.ort}</li>
+          <li><Icon name="mail" size={14} /><a href={`mailto:${profil.email}`}>{profil.email}</a></li>
+          <li><Icon name="globe" size={14} /><a href={site.href}>{site.host}</a></li>
+          {instagramUrl && <li><Icon name="instagram" size={14} /><a href={instagramUrl}>@{profil.instagram}</a></li>}
+        </ul>
+      </header>
+
+      <section class="cv-sec">
+        <h2>{cv.profil_titel}</h2>
+        <p>{cv.profil}</p>
+      </section>
+
+      <div class="cv-cols">
+        <div>
+          <section class="cv-sec">
+            <h2>{cv.ausbildung_titel}</h2>
+            <ol class="cv-list" role="list">
+              {
+                cv.ausbildung.map((a) => (
+                  <li>
+                    <span class="cv-time">{a.zeit}</span>
+                    <div>
+                      <strong>{a.titel}</strong>
+                      {a.ort && <span class="cv-sub">{a.ort}</span>}
+                      {a.text && <span class="cv-sub">{a.text}</span>}
+                    </div>
+                  </li>
+                ))
+              }
+            </ol>
+          </section>
+
+          <section class="cv-sec">
+            <h2>{cv.projekte_titel}</h2>
+            <ul class="cv-list" role="list">
+              {
+                liste.map((p) => (
+                  <li class="cv-project">
+                    <div>
+                      <strong>{p.data.titel}</strong>
+                      <span class="cv-sub">{p.data.kurz}</span>
+                      <span class="cv-tags">{p.data.stack.join(' · ')}</span>
+                    </div>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        </div>
+
+        <div>
+          <section class="cv-sec">
+            <h2>{cv.zertifikate_titel}</h2>
+            <ul class="cv-plain" role="list">
+              {s.zertifikate.map((z) => <li><strong>{z.name}</strong><span class="cv-sub">{z.aussteller}</span></li>)}
+            </ul>
+          </section>
+          <section class="cv-sec">
+            <h2>{cv.sprachen_titel}</h2>
+            <ul class="cv-plain" role="list">
+              {tx.start.sprachen.liste.map((l) => <li><strong>{l.sprache}</strong><span class="cv-sub">{l.niveau}</span></li>)}
+            </ul>
+          </section>
+          <section class="cv-sec">
+            <h2>{cv.kenntnisse_titel}</h2>
+            <ul class="cv-plain" role="list">
+              {
+                kenntnisse.map((k) => (
+                  <li>
+                    <strong>{k.titel}</strong>
+                    <span class="cv-sub">{k.items.join(', ')}</span>
+                    {k.geplant.length > 0 && <span class="cv-sub cv-next">{s.stufen[0]}: {k.geplant.join(', ')}</span>}
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+          <section class="cv-sec">
+            <h2>{s.soft_titel}</h2>
+            <p class="cv-sub">{s.soft.join(' · ')}</p>
+          </section>
+          <section class="cv-sec">
+            <h2>{cv.interessen_titel}</h2>
+            <p class="cv-sub">{cv.interessen}</p>
+          </section>
+        </div>
+      </div>
+      <footer class="cv-foot">{cv.stand}: {heute}</footer>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-7);
+    padding-bottom: var(--space-5);
+  }
+  .actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .paper {
+    max-width: 58rem;
+    margin-inline: auto;
+    padding: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    box-shadow: var(--shadow-card);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  .cv-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-4);
+    padding-bottom: var(--space-5);
+    border-bottom: 2px solid var(--text);
+  }
+  .cv-name {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.6rem + 1.8vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .cv-role {
+    margin-top: 0.25rem;
+    color: var(--primary-text);
+    font-weight: 600;
+  }
+  .cv-head :global(.cv-logo) {
+    color: var(--text);
+  }
+  .cv-contact {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .cv-contact li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .cv-contact a:hover {
+    color: var(--primary-text);
+  }
+  .cv-sec {
+    margin-top: var(--space-6);
+  }
+  .cv-sec h2 {
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+    margin-bottom: var(--space-3);
+  }
+  .cv-cols {
+    display: grid;
+    gap: 0 var(--space-7);
+  }
+  @media (min-width: 760px) {
+    .cv-cols {
+      grid-template-columns: 1.35fr 1fr;
+    }
+  }
+  .cv-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .cv-list li {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: var(--space-3);
+  }
+  .cv-list li.cv-project {
+    grid-template-columns: 1fr;
+  }
+  .cv-time {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-list div,
+  .cv-plain li {
+    display: grid;
+  }
+  .cv-plain {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .cv-sub {
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+  }
+  .cv-next {
+    color: var(--accent-text);
+  }
+  .cv-tags {
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    margin-top: 0.15rem;
+  }
+  .cv-foot {
+    margin-top: var(--space-7);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+  }
+</style>

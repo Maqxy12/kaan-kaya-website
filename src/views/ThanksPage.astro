@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const d = t(lang).kontakt.danke;
+---
+<Base lang={lang} titel={d.seo_titel} alternates={alternates('danke')} noindex>
+  <section class="container thanks hero-in">
+    <span class="icon"><Icon name="circle-check" size={40} /></span>
+    <h1 class="h1">{d.titel}</h1>
+    <p class="lead">{d.text}</p>
+    <a class="btn btn--primary" href={route('start', lang)}>
+      {d.zurueck}<Icon name="arrow-right" size={18} class="arrow" />
+    </a>
+  </section>
+</Base>
+
+<style>
+  .thanks {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-5);
+    padding-block: clamp(4rem, 3rem + 6vw, 9rem);
+  }
+  .icon {
+    display: grid;
+    place-items: center;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    color: var(--success);
+  }
+  .h1 {
+    max-width: 18ch;
+  }
+</style>

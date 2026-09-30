@@ -1,0 +1,347 @@
+---
+/** Illustrationen für die Projekte – reines SVG, passt sich hell/dunkel an. */
+interface Props {
+  visual: 'website' | 'reaktion' | 'roboter' | 'portfolio' | 'timer';
+  class?: string;
+}
+const { visual, class: className } = Astro.props;
+---
+<div class:list={['pv', `pv--${visual}`, className]} aria-hidden="true">
+  {
+    visual === 'website' && (
+      <svg viewBox="0 0 400 250" fill="none">
+        <rect x="30" y="26" width="340" height="210" rx="14" class="s-panel" />
+        <path d="M30 40a14 14 0 0 1 14-14h312a14 14 0 0 1 14 14v12H30z" class="s-bar" />
+        <circle cx="46" cy="39" r="3.5" class="f-red" />
+        <circle cx="58" cy="39" r="3.5" class="f-yellow" />
+        <circle cx="70" cy="39" r="3.5" class="f-green" />
+        <rect x="140" y="33" width="120" height="12" rx="6" class="s-field" />
+        <rect x="52" y="74" width="60" height="7" rx="3.5" class="f-muted" />
+        <rect x="52" y="90" width="150" height="14" rx="4" class="f-text" />
+        <rect x="52" y="110" width="120" height="14" rx="4" class="f-grad" />
+        <rect x="52" y="134" width="140" height="6" rx="3" class="f-muted" />
+        <rect x="52" y="146" width="110" height="6" rx="3" class="f-muted" />
+        <rect x="52" y="166" width="62" height="18" rx="9" class="f-primary" />
+        <rect x="120" y="166" width="62" height="18" rx="9" class="s-field" />
+        <rect x="232" y="70" width="116" height="138" rx="12" class="s-card" />
+        <path d="m290 104 18 10.4v20.8L290 145.6l-18-10.4v-20.8z" class="s-hex" />
+        <circle cx="297" cy="125" r="3" class="f-accent" />
+        <rect x="246" y="160" width="88" height="5" rx="2.5" class="f-muted" />
+        <rect x="246" y="172" width="70" height="5" rx="2.5" class="f-muted" />
+        <rect x="246" y="184" width="80" height="5" rx="2.5" class="f-accent-soft" />
+        <g class="palette-float">
+          <rect x="96" y="150" width="210" height="72" rx="12" class="s-float" />
+          <circle cx="116" cy="170" r="5" class="s-icon" />
+          <path d="m119.5 173.5 4 4" class="s-icon" />
+          <rect x="130" y="166" width="90" height="7" rx="3.5" class="f-text-soft" />
+          <rect x="268" y="163" width="26" height="14" rx="4" class="s-field" />
+          <rect x="108" y="190" width="186" height="22" rx="7" class="f-primary-soft" />
+          <rect x="118" y="198" width="70" height="6" rx="3" class="f-primary-text" />
+        </g>
+      </svg>
+    )
+  }
+  {
+    visual === 'reaktion' && (
+      <svg viewBox="0 0 400 250" fill="none">
+        <rect x="70" y="30" width="260" height="150" rx="18" class="f-go" />
+        <circle cx="200" cy="80" r="20" class="f-white" />
+        <path d="m203 68-10 14h10l-4 12 12-16h-10l3-10z" class="f-go-dark" />
+        <text x="200" y="140" text-anchor="middle" class="t-big">243 ms</text>
+        <g class="rounds">
+          <rect x="70" y="196" width="46" height="24" rx="6" class="f-primary-soft s-primary" />
+          <rect x="123.5" y="196" width="46" height="24" rx="6" class="f-primary-soft s-primary" />
+          <rect x="177" y="196" width="46" height="24" rx="6" class="f-primary-soft s-primary" />
+          <rect x="230.5" y="196" width="46" height="24" rx="6" class="s-dash" />
+          <rect x="284" y="196" width="46" height="24" rx="6" class="s-dash" />
+          <text x="93" y="212" text-anchor="middle" class="t-small">251</text>
+          <text x="146.5" y="212" text-anchor="middle" class="t-small">238</text>
+          <text x="200" y="212" text-anchor="middle" class="t-small">243</text>
+        </g>
+        <circle cx="200" cy="105" r="120" class="s-ring" />
+      </svg>
+    )
+  }
+  {
+    visual === 'roboter' && (
+      <svg viewBox="0 0 400 250" fill="none">
+        <g class="grid-lines">
+          {Array.from({ length: 9 }, (_, i) => <path d={`M${20 + i * 45} 10v230`} />)}
+          {Array.from({ length: 6 }, (_, i) => <path d={`M10 ${20 + i * 45}h380`} />)}
+        </g>
+        <path d="M268 112c18 0 34 8 44 20M268 100c26 0 48 12 62 30M268 88c34 0 62 16 80 40" class="s-waves" />
+        <rect x="120" y="92" width="150" height="70" rx="14" class="s-line f-body" />
+        <rect x="138" y="72" width="82" height="26" rx="8" class="s-line f-body" />
+        <circle cx="250" cy="112" r="11" class="s-accent f-bg" />
+        <circle cx="250" cy="112" r="4" class="f-accent" />
+        <circle cx="158" cy="85" r="4" class="f-primary" />
+        <circle cx="176" cy="85" r="4" class="f-primary" />
+        <rect x="160" y="110" width="62" height="30" rx="5" class="s-dim" />
+        <path d="M168 120h12m6 0h26M168 130h20m6 0h18" class="s-dim" />
+        <circle cx="150" cy="170" r="20" class="s-line f-bg" />
+        <circle cx="150" cy="170" r="7" class="s-dim" />
+        <circle cx="240" cy="170" r="20" class="s-line f-bg" />
+        <circle cx="240" cy="170" r="7" class="s-dim" />
+        <path d="M270 128h36" class="s-label" />
+        <path d="M150 196v26h-40" class="s-label" />
+        <path d="M178 72V50h-40" class="s-label" />
+        <text x="312" y="146" class="t-label">sensor</text>
+        <text x="60" y="226" class="t-label">drive</text>
+        <text x="88" y="54" class="t-label">control</text>
+      </svg>
+    )
+  }
+  {
+    visual === 'timer' && (
+      <svg viewBox="0 0 400 250" fill="none">
+        <rect x="150" y="20" width="100" height="22" rx="11" class="f-go-soft" />
+        <text x="200" y="35.5" text-anchor="middle" class="t-pill">RUNDE 2 / 3</text>
+        <circle cx="200" cy="140" r="78" class="s-track" />
+        <circle cx="200" cy="140" r="78" class="s-go" pathLength="100" stroke-dasharray="100" stroke-dashoffset="28" transform="rotate(-90 200 140)" />
+        <text x="200" y="152" text-anchor="middle" class="t-timer">2:47</text>
+        <rect x="136" y="228" width="128" height="8" rx="4" class="f-muted" />
+        <circle cx="96" cy="140" r="16" class="s-field" />
+        <path d="M91 134v12l10-6z" class="f-text-soft" />
+        <circle cx="304" cy="140" r="16" class="s-field" />
+        <path d="M297 136h4l5-4v16l-5-4h-4z" class="f-text-soft" />
+        <path d="M310 134c2 3 2 9 0 12" class="s-dim" />
+      </svg>
+    )
+  }
+  {
+    visual === 'portfolio' && (
+      <svg viewBox="0 0 400 250" fill="none">
+        <rect x="60" y="24" width="280" height="206" rx="10" class="s-panel" />
+        <rect x="60" y="24" width="280" height="30" rx="10" class="s-bar" />
+        <rect x="76" y="35" width="50" height="8" rx="4" class="f-muted" />
+        <rect x="236" y="35" width="28" height="8" rx="4" class="f-muted" />
+        <rect x="272" y="35" width="28" height="8" rx="4" class="f-muted" />
+        <circle cx="110" cy="96" r="24" class="s-hex f-bg" />
+        <text x="110" y="102" text-anchor="middle" class="t-mono">KK</text>
+        <rect x="150" y="80" width="120" height="10" rx="5" class="f-text" />
+        <rect x="150" y="98" width="160" height="6" rx="3" class="f-muted" />
+        <rect x="150" y="110" width="140" height="6" rx="3" class="f-muted" />
+        <rect x="84" y="140" width="232" height="72" rx="10" class="s-card" />
+        <rect x="100" y="154" width="84" height="44" rx="8" class="f-go" />
+        <text x="142" y="181" text-anchor="middle" class="t-go">GO!</text>
+        <rect x="198" y="160" width="96" height="7" rx="3.5" class="f-text-soft" />
+        <rect x="198" y="174" width="70" height="6" rx="3" class="f-muted" />
+        <rect x="198" y="186" width="54" height="6" rx="3" class="f-accent-soft" />
+        <text x="318" y="224" text-anchor="end" class="t-label">v1</text>
+      </svg>
+    )
+  }
+</div>
+
+<style>
+  .pv {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background:
+      radial-gradient(80% 90% at 20% 0%, var(--primary-soft), transparent 70%),
+      radial-gradient(60% 70% at 100% 100%, var(--accent-soft), transparent 70%),
+      var(--surface-1);
+  }
+  .pv::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(var(--grid-dot) 1px, transparent 1.2px);
+    background-size: 16px 16px;
+    mask-image: linear-gradient(to bottom, #000, transparent 90%);
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 90%);
+  }
+  svg {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  :global(.card:hover) > .pv svg,
+  :global(a:hover) .pv svg {
+    transform: scale(1.03) translateY(-3px);
+  }
+  .s-panel {
+    fill: var(--surface-2);
+    stroke: var(--border-strong);
+  }
+  .s-bar {
+    fill: var(--surface-3);
+  }
+  .s-field {
+    fill: var(--surface-1);
+    stroke: var(--border-strong);
+  }
+  .s-card {
+    fill: var(--surface-1);
+    stroke: var(--border);
+  }
+  .s-float {
+    fill: var(--surface-1);
+    stroke: var(--primary-line);
+    filter: drop-shadow(0 12px 24px rgb(0 0 0 / 0.35));
+  }
+  .s-hex {
+    stroke: var(--primary);
+    stroke-width: 2.5;
+  }
+  .s-icon {
+    stroke: var(--text-subtle);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .s-line {
+    stroke: var(--primary-text);
+    stroke-width: 2;
+  }
+  .s-dim {
+    stroke: var(--text-subtle);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+  .s-accent {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+  }
+  .s-primary {
+    stroke: var(--primary-line);
+  }
+  .s-dash {
+    stroke: var(--border-strong);
+    stroke-dasharray: 4 3;
+  }
+  .s-waves {
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0.8;
+  }
+  .s-label {
+    stroke: var(--text-subtle);
+    stroke-dasharray: 3 3;
+  }
+  .s-ring {
+    stroke: #22c55e;
+    stroke-opacity: 0.15;
+    stroke-width: 1.5;
+  }
+  .grid-lines path {
+    stroke: var(--primary-line);
+    stroke-opacity: 0.35;
+  }
+  .f-red {
+    fill: #ff5f57;
+  }
+  .f-yellow {
+    fill: #febc2e;
+  }
+  .f-green {
+    fill: #28c840;
+  }
+  .f-muted {
+    fill: var(--surface-3);
+  }
+  .f-text {
+    fill: var(--text);
+    opacity: 0.85;
+  }
+  .f-text-soft {
+    fill: var(--text-muted);
+    opacity: 0.6;
+  }
+  .f-grad {
+    fill: var(--primary-text);
+  }
+  .f-primary {
+    fill: var(--primary);
+  }
+  .f-primary-soft {
+    fill: var(--primary-soft);
+  }
+  .f-primary-text {
+    fill: var(--primary-text);
+    opacity: 0.8;
+  }
+  .f-accent {
+    fill: var(--accent);
+  }
+  .f-accent-soft {
+    fill: var(--accent);
+    opacity: 0.45;
+  }
+  .f-body {
+    fill: var(--surface-2);
+  }
+  .f-bg {
+    fill: var(--surface-1);
+  }
+  .f-go {
+    fill: #15803d;
+  }
+  .f-go-dark {
+    fill: #15803d;
+  }
+  .f-white {
+    fill: #fff;
+  }
+  .t-big {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -1.5px;
+    fill: #fff;
+  }
+  .t-small {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 11px;
+    fill: var(--primary-text);
+  }
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--text-subtle);
+    letter-spacing: 0.5px;
+  }
+  .t-mono {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 16px;
+    fill: var(--text);
+  }
+  .s-track {
+    stroke: var(--surface-3);
+    stroke-width: 10;
+  }
+  .s-go {
+    stroke: #22c55e;
+    stroke-width: 10;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgb(34 197 94 / 0.5));
+  }
+  .f-go-soft {
+    fill: rgb(34 197 94 / 0.15);
+    stroke: rgb(34 197 94 / 0.4);
+  }
+  .t-pill {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 1px;
+    fill: #22c55e;
+  }
+  .t-timer {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -1.5px;
+    fill: var(--text);
+  }
+  .t-go {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 16px;
+    fill: #fff;
+  }
+</style>

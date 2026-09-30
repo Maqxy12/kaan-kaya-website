@@ -1,0 +1,340 @@
+---
+/**
+ * Kontaktformular über Netlify Forms: funktioniert auch ohne JavaScript.
+ * Mit JavaScript: Prüfung direkt im Browser und Absenden ohne Seitenwechsel.
+ */
+import Icon from '../Icon.astro';
+import { t } from '../../lib/texte';
+import { type Lang, route } from '../../lib/i18n';
+import { profil } from '../../lib/texte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const f = t(lang).kontakt.formular;
+const fehler = JSON.stringify({ name: f.fehler_name, email: f.fehler_email, nachricht: f.fehler_nachricht, senden: f.fehler_senden, sendet: f.sendet });
+---
+<div class="form-wrap card" data-form-wrap data-email={profil.email}>
+  <form
+    name="kontakt"
+    method="POST"
+    action={route('danke', lang)}
+    data-netlify="true"
+    netlify-honeypot="firma"
+    novalidate
+    data-contact-form
+    data-fehler={fehler}
+    aria-labelledby="form-titel"
+  >
+    <input type="hidden" name="form-name" value="kontakt" />
+    <input type="hidden" name="sprache" value={lang} />
+    <p class="hp" aria-hidden="true">
+      <label>Firma <input name="firma" tabindex="-1" autocomplete="off" /></label>
+    </p>
+
+    <div class="form-head">
+      <h2 id="form-titel" class="h3">{f.titel}</h2>
+      <p class="muted">{f.text}</p>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f-name">{f.name} <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-name" name="name" type="text" autocomplete="name" required minlength="2" placeholder={f.name_platzhalter} aria-describedby="f-name-err" />
+        <p class="err" id="f-name-err" data-err-for="name"></p>
+      </div>
+      <div class="field">
+        <label for="f-email">{f.email} <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder={f.email_platzhalter} aria-describedby="f-email-err" />
+        <p class="err" id="f-email-err" data-err-for="email"></p>
+      </div>
+    </div>
+
+    <fieldset class="field topics">
+      <legend>{f.thema}</legend>
+      <div class="chips-row">
+        {
+          f.themen.map((th, i) => (
+            <label class="topic">
+              <input type="radio" name="thema" value={th} checked={i === 0} class="sr-only" />
+              <span>{th}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <div class="field">
+      <label for="f-msg">{f.nachricht} <span class="req" aria-hidden="true">*</span></label>
+      <textarea id="f-msg" name="nachricht" rows="6" required minlength="10" placeholder={f.nachricht_platzhalter} aria-describedby="f-msg-err"></textarea>
+      <p class="err" id="f-msg-err" data-err-for="nachricht"></p>
+    </div>
+
+    <p class="note">
+      <Icon name="shield-check" size={15} />
+      <span>{f.datenschutz_hinweis} <a href={route('datenschutz', lang)}>{f.datenschutz_link}</a>.</span>
+    </p>
+
+    <button class="btn btn--primary btn--block submit" type="submit" data-submit>
+      <span data-submit-label>{f.senden}</span>
+      <Icon name="send" size={17} class="arrow" />
+    </button>
+    <p class="err err--form" role="alert" data-form-error>
+    </p>
+  </form>
+
+  <div class="success" data-success hidden tabindex="-1">
+    <span class="success-icon"><Icon name="circle-check" size={34} /></span>
+    <h2 class="h3">{f.erfolg_titel}</h2>
+    <p class="muted">{f.erfolg_text}</p>
+    <button type="button" class="btn btn--secondary btn--sm" data-reset>{f.erfolg_nochmal}</button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-contact-form]').forEach((form) => {
+    const T = JSON.parse(form.dataset.fehler!);
+    const wrap = form.closest<HTMLElement>('[data-form-wrap]')!;
+    const success = wrap.querySelector<HTMLElement>('[data-success]')!;
+    const formErr = form.querySelector<HTMLElement>('[data-form-error]')!;
+    const btn = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const btnLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
+    const email = (form.closest('[data-email]') as HTMLElement | null)?.dataset.email ?? '';
+
+    const regeln: Record<string, (v: string) => boolean> = {
+      name: (v) => v.trim().length >= 2,
+      email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
+      nachricht: (v) => v.trim().length >= 10,
+    };
+
+    const pruefe = (feld: HTMLInputElement | HTMLTextAreaElement) => {
+      const regel = regeln[feld.name];
+      if (!regel) return true;
+      const ok = regel(feld.value);
+      const err = form.querySelector<HTMLElement>(`[data-err-for="${feld.name}"]`)!;
+      feld.setAttribute('aria-invalid', String(!ok));
+      err.textContent = ok ? '' : T[feld.name];
+      return ok;
+    };
+
+    const felder = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[name="name"], input[name="email"], textarea')];
+    felder.forEach((f) => {
+      f.addEventListener('blur', () => f.value && pruefe(f));
+      f.addEventListener('input', () => f.getAttribute('aria-invalid') === 'true' && pruefe(f));
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formErr.textContent = '';
+      const ungueltig = felder.filter((f) => !pruefe(f));
+      if (ungueltig.length) {
+        ungueltig[0].focus();
+        return;
+      }
+      btn.disabled = true;
+      const alt = btnLabel.textContent;
+      btnLabel.textContent = T.sendet;
+      try {
+        const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+        const res = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        form.hidden = true;
+        success.hidden = false;
+        success.focus();
+        form.reset();
+      } catch {
+        formErr.innerHTML = '';
+        formErr.append(T.senden + ' ');
+        const a = Object.assign(document.createElement('a'), { href: `mailto:${email}`, textContent: email });
+        formErr.append(a);
+      } finally {
+        btn.disabled = false;
+        btnLabel.textContent = alt;
+      }
+    });
+
+    wrap.querySelector('[data-reset]')?.addEventListener('click', () => {
+      success.hidden = true;
+      form.hidden = false;
+      felder[0].focus();
+    });
+  });
+</script>
+
+<style>
+  .form-wrap {
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--radius-xl);
+  }
+  form {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .form-head {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .row {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.45rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+  }
+  label,
+  legend {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text);
+    padding: 0;
+  }
+  legend {
+    margin-bottom: 0.45rem;
+  }
+  .req {
+    color: var(--accent-text);
+  }
+  input:not([type='radio']),
+  textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-1);
+    color: var(--text);
+    font-size: 1rem;
+    transition:
+      border-color var(--dur),
+      box-shadow var(--dur);
+  }
+  textarea {
+    resize: vertical;
+    min-height: 9rem;
+    line-height: 1.6;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--text-subtle);
+    opacity: 0.8;
+  }
+  input:not([type='radio']):focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.22);
+  }
+  [aria-invalid='true'] {
+    border-color: var(--danger) !important;
+  }
+  .err {
+    min-height: 0;
+    font-size: var(--fs-sm);
+    color: var(--danger);
+  }
+  .err:empty {
+    display: none;
+  }
+  .err a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .topic span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-1);
+    color: var(--text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--dur);
+  }
+  .topic span:hover {
+    color: var(--text);
+  }
+  .topic input:checked + span {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    color: var(--primary-text);
+  }
+  .topic input:focus-visible + span {
+    outline: 2px solid var(--primary-text);
+    outline-offset: 2px;
+  }
+  .note {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .note :global(svg) {
+    flex: none;
+    margin-top: 0.2rem;
+  }
+  .note a {
+    color: var(--primary-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .submit {
+    min-height: 3.25rem;
+    font-size: 1rem;
+    background-image: linear-gradient(100deg, var(--primary-strong), var(--primary) 60%, #7c5cff);
+  }
+  .submit:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+  .success {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-3);
+    padding: var(--space-8) var(--space-4);
+    outline: none;
+  }
+  .success[hidden] {
+    display: none;
+  }
+  .success-icon {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    color: var(--success);
+    margin-bottom: var(--space-2);
+  }
+</style>

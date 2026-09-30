@@ -1,0 +1,121 @@
+---
+/** Karte der Schweiz mit Zug (Zuhause), Zürich (WISS) und Rotkreuz (Roche). */
+import karte from '../../data/switzerland.json';
+
+interface Props {
+  alt: string;
+  orte: { zug: string; zurich: string; rotkreuz: string };
+}
+const { alt, orte } = Astro.props;
+const { width, height, d, points } = karte;
+const [zx, zy] = points.zug;
+const [zhx, zhy] = points.zurich;
+const [rx, ry] = points.rotkreuz;
+---
+<figure class="map">
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={alt}>
+    <defs>
+      <pattern id="map-dots" width="7" height="7" patternUnits="userSpaceOnUse">
+        <circle cx="3.5" cy="3.5" r="1.3" class="dot" />
+      </pattern>
+      <radialGradient id="map-glow">
+        <stop offset="0" class="glow-in" />
+        <stop offset="1" class="glow-out" />
+      </radialGradient>
+    </defs>
+    <path d={d} class="land" />
+    <path d={d} fill="url(#map-dots)" />
+    <circle cx={zx} cy={zy} r="90" fill="url(#map-glow)" />
+
+    <path d={`M${zhx} ${zhy} L${zhx + 60} ${zhy - 44} h70`} class="leader" />
+    <path d={`M${zx} ${zy} L${zx + 70} ${zy + 10} h70`} class="leader" />
+    <path d={`M${rx} ${ry} L${rx - 70} ${ry + 60} h-100`} class="leader" />
+
+    <circle cx={zhx} cy={zhy} r="6" class="pin pin--2" />
+    <circle cx={rx} cy={ry} r="6" class="pin pin--3" />
+    <circle cx={zx} cy={zy} r="16" class="pin-ring" />
+    <circle cx={zx} cy={zy} r="7.5" class="pin pin--1" />
+
+    <text x={zhx + 64} y={zhy - 52} class="label">{orte.zurich}</text>
+    <text x={zx + 74} y={zy + 2} class="label label--main">{orte.zug}</text>
+    <text x={rx - 70} y={ry + 52} class="label" text-anchor="end">{orte.rotkreuz}</text>
+  </svg>
+</figure>
+
+<style>
+  .map {
+    margin: 0;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .land {
+    fill: var(--surface-2);
+    stroke: var(--primary-line);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .dot {
+    fill: var(--text-subtle);
+    fill-opacity: 0.35;
+  }
+  .glow-in {
+    stop-color: #3b82f6;
+    stop-opacity: 0.35;
+  }
+  .glow-out {
+    stop-color: #3b82f6;
+    stop-opacity: 0;
+  }
+  .leader {
+    fill: none;
+    stroke: var(--text-subtle);
+    stroke-width: 1.2;
+    stroke-dasharray: 3 3;
+  }
+  .pin {
+    stroke: var(--bg);
+    stroke-width: 2.5;
+  }
+  .pin--1 {
+    fill: var(--accent);
+  }
+  .pin--2,
+  .pin--3 {
+    fill: var(--primary);
+  }
+  .pin-ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pin-ring {
+      animation: map-ping 2.4s var(--ease-out) infinite;
+    }
+    @keyframes map-ping {
+      from {
+        transform: scale(0.5);
+        opacity: 1;
+      }
+      to {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+  }
+  .label {
+    font-family: var(--font-sans);
+    font-size: 19px;
+    font-weight: 600;
+    fill: var(--text-muted);
+  }
+  .label--main {
+    fill: var(--text);
+    font-weight: 750;
+  }
+</style>

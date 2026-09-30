@@ -1,0 +1,400 @@
+---
+/**
+ * Reaktionsspiel 2.0 – 5 Runden, Durchschnitt, Bestzeit (lokal gespeichert),
+ * Bedienung per Maus, Touch oder Tastatur.
+ */
+import Icon from './Icon.astro';
+import { t } from '../lib/texte';
+import type { Lang } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+  kompakt?: boolean;
+}
+const { lang, kompakt = false } = Astro.props;
+const r = t(lang).start.reaktion;
+const RUNDEN = 5;
+const texte = JSON.stringify(r);
+---
+<section class:list={['container section game-section', { kompakt }]} id="reaktion" aria-labelledby="reaktion-titel">
+  <div class="game card reveal" data-game data-runden={RUNDEN} data-texte={texte}>
+    <div class="game-info">
+      <p class="eyebrow">{r.eyebrow}</p>
+      <h2 id="reaktion-titel" class="h2">{r.titel}</h2>
+      <p class="muted">{r.text}</p>
+      <dl class="scores">
+        <div class="score">
+          <dt><Icon name="trophy" size={15} />{r.bestzeit}</dt>
+          <dd data-best>{r.noch_keine}</dd>
+        </div>
+        <div class="score">
+          <dt><Icon name="timer" size={15} />{r.schnitt}</dt>
+          <dd data-avg>{r.noch_keine}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="arena">
+      <button class="pad" type="button" data-pad data-state="idle" aria-describedby="reaktion-hilfe">
+        <span class="pad-icon" aria-hidden="true"><Icon name="zap" size={30} /></span>
+        <span class="pad-main" data-main>{r.start}</span>
+        <span class="pad-sub" data-sub>{r.anleitung}</span>
+      </button>
+      <p id="reaktion-hilfe" class="sr-only">{r.anleitung}</p>
+      <ol class="rounds" role="list" aria-label={`${r.runde} 1–${RUNDEN}`}>
+        {Array.from({ length: RUNDEN }, () => <li class="round" />)}
+      </ol>
+      <p class="sr-only" aria-live="assertive" data-live></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  type Texte = {
+    start: string;
+    anleitung: string;
+    warten: string;
+    warten_hinweis: string;
+    los: string;
+    zu_frueh: string;
+    zu_frueh_text: string;
+    ergebnis: string;
+    runde: string;
+    von: string;
+    weiter: string;
+    schnitt: string;
+    bestzeit: string;
+    nochmal: string;
+    bewertungen: { bis: number; text: string }[];
+  };
+  type State = 'idle' | 'waiting' | 'go' | 'result' | 'early' | 'done';
+
+  const KEY = 'reaktion-best';
+  const lesen = () => {
+    try {
+      return Number(localStorage.getItem(KEY)) || 0;
+    } catch {
+      return 0;
+    }
+  };
+  const speichern = (v: number) => {
+    try {
+      localStorage.setItem(KEY, String(v));
+    } catch {
+      /* egal */
+    }
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-game]').forEach((root) => {
+    const T: Texte = JSON.parse(root.dataset.texte!);
+    const RUNDEN = Number(root.dataset.runden);
+    const pad = root.querySelector<HTMLButtonElement>('[data-pad]')!;
+    const main = root.querySelector<HTMLElement>('[data-main]')!;
+    const sub = root.querySelector<HTMLElement>('[data-sub]')!;
+    const live = root.querySelector<HTMLElement>('[data-live]')!;
+    const bestEl = root.querySelector<HTMLElement>('[data-best]')!;
+    const avgEl = root.querySelector<HTMLElement>('[data-avg]')!;
+    const rounds = [...root.querySelectorAll<HTMLElement>('.round')];
+
+    let state: State = 'idle';
+    let zeiten: number[] = [];
+    let timer = 0;
+    let start = 0;
+    const ms = (n: number) => `${Math.round(n)} ms`;
+    const bewertung = (n: number) => T.bewertungen.find((b) => n <= b.bis)?.text ?? '';
+
+    const zeigeBest = () => {
+      const b = lesen();
+      if (b) bestEl.textContent = ms(b);
+    };
+    zeigeBest();
+
+    const setze = (s: State, haupt: string, neben: string, ansage = haupt) => {
+      state = s;
+      pad.dataset.state = s;
+      main.textContent = haupt;
+      sub.textContent = neben;
+      live.textContent = ansage;
+    };
+
+    const warten = () => {
+      setze('waiting', T.warten, T.warten_hinweis);
+      const delay = 1400 + Math.random() * 2600;
+      timer = window.setTimeout(() => {
+        setze('go', T.los, '');
+        start = performance.now();
+        // Genauer: ab dem Frame messen, in dem die neue Farbe wirklich auf dem Bildschirm ist
+        requestAnimationFrame((ts) => {
+          if (state === 'go') start = Math.max(start, ts);
+        });
+      }, delay);
+    };
+
+    const aktion = () => {
+      switch (state) {
+        case 'idle':
+        case 'done':
+          zeiten = [];
+          rounds.forEach((r) => {
+            r.textContent = '';
+            delete r.dataset.filled;
+          });
+          warten();
+          break;
+        case 'waiting':
+          clearTimeout(timer);
+          setze('early', T.zu_frueh, T.zu_frueh_text);
+          break;
+        case 'early':
+          warten();
+          break;
+        case 'go': {
+          const zeit = performance.now() - start;
+          // Unter 100 ms kann niemand reagieren → das war geraten
+          if (zeit < 100) {
+            setze('early', T.zu_frueh, T.zu_frueh_text);
+            break;
+          }
+          zeiten.push(zeit);
+          const r = rounds[zeiten.length - 1];
+          r.dataset.filled = 'true';
+          r.textContent = String(Math.round(zeit));
+          if (zeiten.length >= RUNDEN) {
+            const schnitt = zeiten.reduce((a, b) => a + b, 0) / zeiten.length;
+            const beste = Math.min(...zeiten);
+            const alt = lesen();
+            if (!alt || beste < alt) speichern(beste);
+            zeigeBest();
+            avgEl.textContent = ms(schnitt);
+            setze('done', ms(schnitt), `${T.schnitt} · ${bewertung(schnitt)}`, `${T.schnitt}: ${ms(schnitt)}. ${bewertung(schnitt)}`);
+            sub.dataset.after = T.nochmal;
+          } else {
+            setze(
+              'result',
+              ms(zeit),
+              `${T.runde} ${zeiten.length} ${T.von} ${RUNDEN} · ${T.weiter}`,
+              `${ms(zeit)}. ${bewertung(zeit)}`,
+            );
+          }
+          break;
+        }
+        case 'result':
+          warten();
+          break;
+      }
+    };
+
+    // pointerdown reagiert schneller als click → fairere Messung
+    pad.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      aktion();
+    });
+    pad.addEventListener('keydown', (e) => {
+      if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) {
+        e.preventDefault();
+        aktion();
+      }
+    });
+    pad.addEventListener('keyup', (e) => {
+      if (e.key === ' ') e.preventDefault();
+    });
+    // Klicks ohne Zeiger (z. B. Screenreader) trotzdem unterstützen
+    pad.addEventListener('click', (e) => {
+      if (e.detail === 0) aktion();
+    });
+
+    // Direktlink #reaktion: Fokus auf das Spielfeld
+    if (location.hash === '#reaktion') pad.focus({ preventScroll: true });
+  });
+</script>
+
+<style>
+  .game {
+    display: grid;
+    gap: var(--space-6);
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  @media (min-width: 900px) {
+    .game {
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+      gap: var(--space-8);
+    }
+  }
+  .game-info {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+  }
+  .scores {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-top: var(--space-2);
+  }
+  .score {
+    min-width: 8.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+  }
+  .score dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--fs-xs);
+    color: var(--text-subtle);
+    font-weight: 600;
+  }
+  .score dd {
+    margin-top: 0.15rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .arena {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .pad {
+    position: relative;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.5rem;
+    min-height: clamp(15rem, 12rem + 10vw, 20rem);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-strong);
+    background:
+      radial-gradient(70% 70% at 50% 40%, var(--primary-soft), transparent 70%),
+      var(--surface-1);
+    color: var(--text);
+    text-align: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition:
+      background-color 80ms linear,
+      border-color var(--dur),
+      box-shadow var(--dur),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .pad:hover {
+    border-color: var(--primary);
+  }
+  .pad:active {
+    transform: scale(0.99);
+  }
+  .pad-icon {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--primary-strong);
+    color: #fff;
+    box-shadow: var(--glow-primary);
+    margin-bottom: 0.5rem;
+  }
+  .pad-main {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .pad-sub {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    max-width: 28ch;
+  }
+
+  .pad[data-state='waiting'] {
+    background: color-mix(in srgb, #ef4444 16%, var(--surface-1));
+    border-color: color-mix(in srgb, #ef4444 55%, transparent);
+  }
+  .pad[data-state='waiting'] .pad-icon {
+    background: #b91c1c;
+    box-shadow: 0 0 24px rgb(239 68 68 / 0.45);
+  }
+  .pad[data-state='go'] {
+    background: #15803d;
+    border-color: #22c55e;
+    box-shadow: 0 0 60px -10px rgb(34 197 94 / 0.7);
+    color: #fff;
+    transition: none;
+  }
+  .pad[data-state='go'] .pad-icon {
+    background: #fff;
+    color: #15803d;
+    box-shadow: none;
+  }
+  .pad[data-state='early'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, var(--surface-1));
+  }
+  .pad[data-state='early'] .pad-icon {
+    background: var(--accent-strong);
+    color: var(--on-accent);
+    box-shadow: var(--glow-accent);
+  }
+  .pad[data-state='result'] .pad-main,
+  .pad[data-state='done'] .pad-main {
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+  .pad[data-state='done'] {
+    border-color: var(--accent-line);
+  }
+  .pad[data-state='done'] .pad-sub::after {
+    content: attr(data-after);
+    display: block;
+    margin-top: 0.75rem;
+    color: var(--primary-text);
+    font-weight: 600;
+  }
+
+  .rounds {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-2);
+  }
+  .round {
+    display: grid;
+    place-items: center;
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--border-strong);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .round[data-filled] {
+    border-style: solid;
+    border-color: var(--primary-line);
+    background: var(--primary-soft);
+    color: var(--primary-text);
+  }
+  .round[data-filled]::after {
+    content: ' ms';
+    font-weight: 500;
+    opacity: 0.7;
+    margin-left: 0.15em;
+  }
+  .kompakt {
+    padding-inline: 0;
+  }
+</style>

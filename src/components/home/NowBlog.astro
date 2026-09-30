@@ -1,0 +1,159 @@
+---
+import Icon from '../Icon.astro';
+import { t, profil } from '../../lib/texte';
+import { type Lang, route, blogPfad, formatDatum } from '../../lib/i18n';
+import { beitraege, slug } from '../../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const posts = (await beitraege(lang)).slice(0, 2);
+const jetzt = tx.jetzt.liste.slice(0, 4);
+---
+<section class="container section split" aria-label={`${tx.start.jetzt_teaser.titel} / ${tx.start.blog_teaser.titel}`}>
+  <div class="card card--pad col reveal">
+    <div class="col-head">
+      <p class="eyebrow">{tx.start.jetzt_teaser.eyebrow}</p>
+      <h2 class="h3">{tx.start.jetzt_teaser.titel}</h2>
+      <p class="subtle small">
+        {tx.allgemein.aktualisiert}: <time datetime={profil.jetzt_aktualisiert}>{formatDatum(profil.jetzt_aktualisiert, lang)}</time>
+      </p>
+    </div>
+    <ul class="now-list" role="list">
+      {
+        jetzt.map((j) => (
+          <li>
+            <span class="icon-tile sm">
+              <Icon name={j.icon} size={17} />
+            </span>
+            <div>
+              <strong>{j.titel}</strong>
+              <p>{j.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="link" href={route('jetzt', lang)}>
+      {tx.start.jetzt_teaser.link}<Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+
+  <div class="card card--pad col reveal">
+    <div class="col-head">
+      <p class="eyebrow">{tx.start.blog_teaser.eyebrow}</p>
+      <h2 class="h3">{tx.start.blog_teaser.titel}</h2>
+    </div>
+    <ul class="posts" role="list">
+      {
+        posts.map((p) => (
+          <li class="post">
+            <time datetime={p.data.datum.toISOString()} class="subtle small">
+              {formatDatum(p.data.datum, lang)}
+            </time>
+            <h3>
+              <a href={blogPfad(lang, slug(p.id))} class="stretched">
+                {p.data.titel}
+              </a>
+            </h3>
+            <p class="muted small">{p.data.beschreibung}</p>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="link" href={route('blog', lang)}>
+      {tx.blog.alle_beitraege}<Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 900px) {
+    .split {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+  .col-head {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .small {
+    font-size: var(--fs-sm);
+  }
+  .now-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .now-list li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+  .now-list strong {
+    font-size: 0.9375rem;
+  }
+  .now-list p {
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  .icon-tile.sm {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.65rem;
+  }
+  .posts {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .post {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    transition:
+      border-color var(--dur),
+      transform var(--dur) var(--ease-out);
+  }
+  .post:hover {
+    border-color: var(--primary-line);
+    transform: translateX(3px);
+  }
+  .post h3 {
+    font-size: 1.0625rem;
+    line-height: 1.35;
+  }
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .link {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--fs-sm);
+    font-weight: 650;
+    color: var(--primary-text);
+  }
+  .link:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  .link :global(svg) {
+    transition: transform var(--dur);
+  }
+</style>

@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route, blogPfad, formatDatum } from '../lib/i18n';
+import { beitraege, slug, lesezeit } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const b = tx.blog;
+const posts = await beitraege(lang);
+const site = Astro.site!;
+---
+<Base
+  lang={lang}
+  titel={b.seo_titel}
+  beschreibung={b.seo_beschreibung}
+  alternates={alternates('blog')}
+  aktiv="blog"
+  ogBild={`/og/${lang}/blog.png`}
+  schema={[
+    {
+      '@type': 'Blog',
+      name: `${b.seo_titel} – Kaan Kaya`,
+      url: new URL(route('blog', lang), site).href,
+      inLanguage: lang === 'de' ? 'de-CH' : 'en',
+      author: { '@id': new URL('/#person', site).href },
+    },
+  ]}
+>
+  <PageHero eyebrow={b.eyebrow} titel={b.titel} intro={b.intro}>
+    <a class="rss" href={lang === 'de' ? '/rss.xml' : '/en/rss.xml'}>
+      <Icon name="rss" size={15} />
+      {tx.footer.rss}
+    </a>
+  </PageHero>
+
+  <section class="container" aria-label={b.alle_beitraege}>
+    {
+      posts.length === 0 ? (
+        <p class="card card--pad muted">{b.leer}</p>
+      ) : (
+        <ol class="posts" role="list">
+          {posts.map((p, i) => (
+            <li class:list={['card post reveal', { featured: i === 0 }]}>
+              <div class="meta">
+                <time datetime={p.data.datum.toISOString()}>{formatDatum(p.data.datum, lang)}</time>
+                <span aria-hidden="true">·</span>
+                <span>
+                  {lesezeit(p.body)} {tx.allgemein.lesezeit}
+                </span>
+              </div>
+              <h2 class="title">
+                <a href={blogPfad(lang, slug(p.id))} class="stretched">
+                  {p.data.titel}
+                </a>
+              </h2>
+              <p class="muted">{p.data.beschreibung}</p>
+              <div class="foot">
+                <ul class="chips" role="list">
+                  {p.data.tags.map((tag) => (
+                    <li class="chip">#{tag}</li>
+                  ))}
+                </ul>
+                <span class="more" aria-hidden="true">
+                  {b.weiterlesen}
+                  <Icon name="arrow-right" size={16} />
+                </span>
+              </div>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </section>
+</Base>
+
+<style>
+  .rss {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--accent-text);
+  }
+  .rss:hover {
+    text-decoration: underline;
+  }
+  .posts {
+    display: grid;
+    gap: var(--space-4);
+  }
+  @media (min-width: 900px) {
+    .posts {
+      grid-template-columns: 1fr 1fr;
+    }
+    .featured {
+      grid-column: 1 / -1;
+    }
+    .featured .title {
+      font-size: var(--fs-h2);
+    }
+  }
+  .post {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    border-radius: var(--radius-xl);
+    transition:
+      border-color var(--dur),
+      transform var(--dur) var(--ease-out),
+      box-shadow var(--dur);
+  }
+  .post:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card), var(--shadow-lift);
+  }
+  .featured {
+    background:
+      radial-gradient(60% 100% at 100% 0%, var(--primary-soft), transparent 70%),
+      var(--glass);
+  }
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--fs-sm);
+    font-weight: 650;
+    color: var(--primary-text);
+  }
+  .more :global(svg) {
+    transition: transform var(--dur);
+  }
+  .post:hover .more :global(svg) {
+    transform: translateX(4px);
+  }
+</style>

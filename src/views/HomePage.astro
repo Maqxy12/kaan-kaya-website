@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/home/Hero.astro';
+import Motto from '../components/home/Motto.astro';
+import Timeline from '../components/home/Timeline.astro';
+import Values from '../components/home/Values.astro';
+import Beyond from '../components/home/Beyond.astro';
+import NowBlog from '../components/home/NowBlog.astro';
+import ReactionGame from '../components/ReactionGame.astro';
+import ProjectCard from '../components/projekte/ProjectCard.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route } from '../lib/i18n';
+import { projekte } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const top = (await projekte(lang)).slice(0, 3);
+const site = Astro.site!;
+---
+<Base
+  lang={lang}
+  titel={tx.start.seo_titel}
+  titelRoh
+  alternates={alternates('start')}
+  aktiv="start"
+  ogTyp="profile"
+  schema={[
+    {
+      '@type': 'ProfilePage',
+      '@id': new URL(route('start', lang), site).href,
+      url: new URL(route('start', lang), site).href,
+      name: tx.start.seo_titel,
+      inLanguage: lang === 'de' ? 'de-CH' : 'en',
+      mainEntity: { '@id': new URL('/#person', site).href },
+    },
+  ]}
+>
+  <Hero lang={lang} />
+  <Motto lang={lang} />
+  <Timeline lang={lang} />
+  <Values lang={lang} />
+
+  <section class="container section" aria-labelledby="projekte-titel">
+    <SectionHead eyebrow={tx.start.projekte_teaser.eyebrow} titel={tx.start.projekte_teaser.titel} id="projekte-titel" class="row-head">
+      <a class="btn btn--secondary btn--sm all" href={route('projekte', lang)}>
+        {tx.allgemein.alle_ansehen}<Icon name="arrow-right" size={16} class="arrow" />
+      </a>
+    </SectionHead>
+    <div class="grid-3">
+      {top.map((p) => <ProjectCard lang={lang} projekt={p} />)}
+    </div>
+  </section>
+
+  <ReactionGame lang={lang} />
+  <Beyond lang={lang} />
+  <NowBlog lang={lang} />
+  <CtaBand
+    titel={tx.start.cta.titel}
+    text={tx.start.cta.text}
+    knopf={tx.start.cta.knopf}
+    href={route('kontakt', lang)}
+    kopierenLabel={tx.allgemein.kopieren}
+  />
+</Base>
+
+<style>
+  .grid-3 {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  }
+  :global(.row-head) {
+    max-width: none;
+  }
+  .all {
+    justify-self: start;
+    margin-top: var(--space-2);
+  }
+</style>

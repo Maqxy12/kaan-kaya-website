@@ -1,0 +1,169 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { t, profil, instagramUrl, githubUrl } from '../lib/texte';
+import { type Lang, route } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const jahr = new Date().getFullYear();
+const seiten = [
+  ['start', tx.nav.start],
+  ['projekte', tx.nav.projekte],
+  ['skills', tx.nav.skills],
+  ['blog', tx.nav.blog],
+  ['jetzt', tx.nav.jetzt],
+  ['lebenslauf', tx.nav.lebenslauf],
+  ['kontakt', tx.nav.kontakt],
+] as const;
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="brand-col">
+        <a class="brand" href={route('start', lang)} aria-label={profil.name}>
+          <Logo size={36} />
+        </a>
+        <p class="claim">{tx.footer.claim}</p>
+        <p class="role subtle">{tx.meta.rolle} · {profil.stadt}, {lang === 'de' ? 'Schweiz' : 'Switzerland'}</p>
+      </div>
+      <nav class="col" aria-label={tx.footer.bereiche}>
+        <h2 class="col-title">{tx.footer.bereiche}</h2>
+        <ul role="list">
+          {seiten.map(([key, label]) => <li><a href={route(key, lang)}>{label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="col">
+        <h2 class="col-title">{tx.footer.kontakt}</h2>
+        <ul role="list">
+          <li>
+            <a href={`mailto:${profil.email}`}><Icon name="mail" size={16} />{profil.email}</a>
+          </li>
+          {
+            instagramUrl && (
+              <li>
+                <a href={instagramUrl} rel="me noopener" target="_blank">
+                  <Icon name="instagram" size={16} />@{profil.instagram}
+                  <span class="sr-only">({tx.allgemein.oeffnet_neues_fenster})</span>
+                </a>
+              </li>
+            )
+          }
+          {
+            githubUrl && (
+              <li>
+                <a href={githubUrl} rel="me noopener" target="_blank">
+                  <Icon name="github" size={16} />GitHub
+                </a>
+              </li>
+            )
+          }
+          <li>
+            <a href={lang === 'de' ? '/rss.xml' : '/en/rss.xml'}><Icon name="rss" size={16} />{tx.footer.rss}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom">
+      <p>© {jahr} {profil.name}. {tx.footer.rechte}</p>
+      <p class="made">{tx.footer.gebaut}</p>
+      <p class="terminal-hint">{tx.footer.terminal_hinweis}</p>
+      <a href={route('datenschutz', lang)}>{tx.nav.datenschutz}</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--section-gap);
+    padding: var(--space-9) 0 calc(var(--tabbar-h) + var(--space-6) + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: linear-gradient(to bottom, var(--bg-soft), var(--bg));
+    font-size: var(--fs-sm);
+  }
+  @media (min-width: 860px) {
+    .site-footer {
+      padding-bottom: var(--space-7);
+    }
+  }
+  .top {
+    display: grid;
+    gap: var(--space-7);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .top {
+      grid-template-columns: 1.4fr 1fr 1.2fr;
+    }
+  }
+  .brand {
+    display: inline-flex;
+    color: var(--text);
+    border-radius: var(--radius-sm);
+  }
+  .claim {
+    margin-top: var(--space-4);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+  .role {
+    margin-top: var(--space-1);
+  }
+  .col-title {
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: var(--space-3);
+  }
+  .col ul {
+    display: grid;
+    gap: 0.35rem;
+  }
+  .col a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    padding-block: 0.15rem;
+    transition: color var(--dur);
+    word-break: break-all;
+  }
+  .col a:hover {
+    color: var(--text);
+  }
+  .bottom {
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    color: var(--text-subtle);
+    font-size: var(--fs-xs);
+  }
+  .bottom a {
+    color: var(--text-muted);
+  }
+  .bottom a:hover {
+    color: var(--text);
+  }
+  .made {
+    flex: 1;
+  }
+  .terminal-hint {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .terminal-hint {
+      display: block;
+    }
+  }
+</style>

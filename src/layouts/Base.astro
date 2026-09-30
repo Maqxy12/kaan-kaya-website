@@ -1,0 +1,229 @@
+---
+/**
+ * Grundgerüst jeder Seite: SEO, Social-Vorschau, strukturierte Daten für Google,
+ * Header, Navigation, Footer und die globalen Skripte.
+ */
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TabBar from '../components/TabBar.astro';
+import { t, profil, instagramUrl, githubUrl } from '../lib/texte';
+import {
+  type Lang,
+  type Alternates,
+  htmlLang,
+  ogLocale,
+  andereSprache,
+  route,
+  cvPdfPfad,
+} from '../lib/i18n';
+
+export type NavKey = 'start' | 'projekte' | 'skills' | 'blog' | 'kontakt' | 'jetzt' | 'lebenslauf' | 'datenschutz' | null;
+
+interface Props {
+  lang: Lang;
+  titel: string;
+  beschreibung?: string;
+  alternates: Alternates;
+  aktiv?: NavKey;
+  ogBild?: string;
+  ogTyp?: 'website' | 'article' | 'profile';
+  veroeffentlicht?: Date;
+  noindex?: boolean;
+  schema?: Record<string, unknown>[];
+  /** Voller Titel ohne automatischen Zusatz " – Kaan Kaya" */
+  titelRoh?: boolean;
+}
+
+const {
+  lang,
+  titel,
+  beschreibung,
+  alternates,
+  aktiv = null,
+  ogBild,
+  ogTyp = 'website',
+  veroeffentlicht,
+  noindex = false,
+  schema = [],
+  titelRoh = false,
+} = Astro.props;
+
+const tx = t(lang);
+const site = Astro.site!;
+const abs = (p: string) => new URL(p, site).href;
+const seitenTitel = titelRoh ? titel : `${titel} – ${tx.meta.seiten_suffix}`;
+const text = beschreibung ?? tx.meta.beschreibung;
+const canonical = abs(Astro.url.pathname);
+const ogUrl = abs(ogBild ?? `/og/${lang}/start.png`);
+const other = andereSprache(lang);
+
+const person = {
+  '@type': 'Person',
+  '@id': abs('/#person'),
+  name: profil.name,
+  url: abs('/'),
+  email: `mailto:${profil.email}`,
+  jobTitle: tx.meta.rolle,
+  image: abs('/og/de/start.png'),
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: profil.stadt,
+    addressRegion: profil.kanton,
+    addressCountry: profil.land,
+  },
+  knowsLanguage: ['tr', 'de', 'en', 'fr', 'ja'],
+  knowsAbout: ['JavaScript', 'Python', 'HTML', 'CSS', 'Web Development', 'Robotics', 'Software Engineering'],
+  affiliation: { '@type': 'EducationalOrganization', name: 'WISS', address: 'Zürich, CH' },
+  hasCredential: [
+    { '@type': 'EducationalOccupationalCredential', name: 'Cambridge C1 Advanced', credentialCategory: 'certificate' },
+    { '@type': 'EducationalOccupationalCredential', name: 'ECDL – European Computer Driving Licence', credentialCategory: 'certificate' },
+  ],
+  sameAs: [instagramUrl, githubUrl, profil.linkedin].filter(Boolean),
+};
+const website = {
+  '@type': 'WebSite',
+  '@id': abs('/#website'),
+  url: abs('/'),
+  name: profil.name,
+  inLanguage: ['de-CH', 'en'],
+  publisher: { '@id': abs('/#person') },
+};
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [person, website, ...schema],
+};
+
+// Einstellungen für die Befehlspalette und den Terminal-Modus (werden erst bei Bedarf geladen)
+const siteConfig = {
+  lang,
+  email: profil.email,
+  instagram: instagramUrl,
+  zeitzone: profil.zeitzone,
+  von: profil.erreichbar_von,
+  bis: profil.erreichbar_bis,
+  andereSprache: alternates[other],
+  cvPdf: cvPdfPfad(lang),
+  kontakt: route('kontakt', lang),
+  start: route('start', lang),
+  suche: `/suche/${lang}.json`,
+  texte: {
+    palette: tx.palette,
+    kopiert: tx.allgemein.kopiert,
+    erreichbar: tx.status.erreichbar,
+    offline: tx.status.offline,
+    ortszeit: tx.status.ortszeit,
+  },
+};
+
+const speculation = {
+  prerender: [{ where: { href_matches: '/*' }, eagerness: 'moderate' }],
+};
+---
+<!doctype html>
+<html lang={htmlLang[lang]} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{seitenTitel}</title>
+    <meta name="description" content={text} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="alternate" hreflang="de-CH" href={abs(alternates.de)} />
+    <link rel="alternate" hreflang="en" href={abs(alternates.en)} />
+    <link rel="alternate" hreflang="x-default" href={abs(alternates.de)} />
+
+    <meta name="author" content={profil.name} />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0f17" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)" />
+    <meta name="format-detection" content="telephone=no" />
+    {profil.google_verifizierung && <meta name="google-site-verification" content={profil.google_verifizierung} />}
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="alternate" type="application/rss+xml" title={`${profil.name} – Blog`} href={lang === 'de' ? '/rss.xml' : '/en/rss.xml'} />
+
+    <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plus-jakarta-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Social-Media-Vorschau (WhatsApp, LinkedIn, X, …) -->
+    <meta property="og:type" content={ogTyp} />
+    <meta property="og:site_name" content={profil.name} />
+    <meta property="og:title" content={seitenTitel} />
+    <meta property="og:description" content={text} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={seitenTitel} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:locale:alternate" content={ogLocale[other]} />
+    {veroeffentlicht && <meta property="article:published_time" content={veroeffentlicht.toISOString()} />}
+    {veroeffentlicht && <meta property="article:author" content={profil.name} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Farbmodus sofort setzen (verhindert Aufblitzen) -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, s = null;
+        try { s = localStorage.getItem('theme'); } catch (e) {}
+        d.dataset.theme = s === 'light' || s === 'dark' ? s : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      })();
+    </script>
+    <script type="speculationrules" set:html={JSON.stringify(speculation)} />
+    {
+      profil.goatcounter && (
+        <script
+          is:inline
+          async
+          src="https://gc.zgo.at/count.js"
+          data-goatcounter={`https://${profil.goatcounter}.goatcounter.com/count`}
+        />
+      )
+    }
+    <slot name="head" />
+  </head>
+  <body data-page={aktiv ?? 'andere'}>
+    <a class="skip-link" href="#inhalt">{tx.nav.zum_inhalt}</a>
+    <Header lang={lang} aktiv={aktiv} alternates={alternates} />
+    <main id="inhalt" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <TabBar lang={lang} aktiv={aktiv} />
+    <script type="application/json" id="site-config" set:html={JSON.stringify(siteConfig)} />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.75rem 1.1rem;
+    border-radius: var(--radius-full);
+    background: var(--primary-strong);
+    color: var(--on-primary);
+    font-weight: 600;
+    transform: translateY(-200%);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+  main {
+    display: block;
+    padding-top: var(--header-h);
+    outline: none;
+  }
+</style>

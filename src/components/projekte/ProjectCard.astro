@@ -1,0 +1,104 @@
+---
+import Icon from '../Icon.astro';
+import ProjectVisual from './ProjectVisual.astro';
+import { t } from '../../lib/texte';
+import { type Lang, projektPfad } from '../../lib/i18n';
+import { slug, type Projekt } from '../../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+  projekt: Projekt;
+  headingLevel?: 'h2' | 'h3';
+}
+const { lang, projekt, headingLevel: H = 'h3' } = Astro.props;
+const p = projekt.data;
+const tx = t(lang).projekte;
+const href = projektPfad(lang, slug(projekt.id));
+---
+<article class="card project reveal" data-cat={p.kategorie.join(' ')}>
+  <ProjectVisual visual={p.visual} />
+  <div class="body">
+    {
+      p.highlight && (
+        <p class="chip chip--accent hl">
+          <Icon name="sparkles" size={13} />
+          {p.highlight}
+        </p>
+      )
+    }
+    <H class="h3 title">
+      <a href={href} class="stretched">{p.titel}</a>
+    </H>
+    <p class="muted kurz">{p.kurz}</p>
+    <ul class="chips" role="list">
+      {p.stack.map((s) => <li class="chip">{s}</li>)}
+    </ul>
+    <span class="more" aria-hidden="true">
+      {tx.case_study}
+      <Icon name="arrow-right" size={16} />
+    </span>
+  </div>
+</article>
+
+<style>
+  .project {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition:
+      transform var(--dur) var(--ease-out),
+      border-color var(--dur),
+      box-shadow var(--dur);
+  }
+  .project:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-card), var(--shadow-lift);
+  }
+  .project:focus-within {
+    border-color: var(--primary);
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    flex: 1;
+    border-top: 1px solid var(--border);
+  }
+  .title {
+    font-size: 1.3rem;
+  }
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .stretched:focus-visible {
+    outline: none;
+  }
+  .kurz {
+    font-size: 0.9375rem;
+  }
+  .chips {
+    margin-top: var(--space-1);
+  }
+  .more {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--fs-sm);
+    font-weight: 650;
+    color: var(--primary-text);
+  }
+  .more :global(svg) {
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .project:hover .more :global(svg) {
+    transform: translateX(4px);
+  }
+</style>

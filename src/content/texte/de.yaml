@@ -1,0 +1,645 @@
+# ════════════════════════════════════════════════════════════════════
+#  ALLE DEUTSCHEN TEXTE DER WEBSITE
+#
+#  So bearbeitest du diese Datei:
+#   • Ändere nur den Text RECHTS vom Doppelpunkt. Die Namen links (z. B. "titel:") bleiben gleich.
+#   • Enthält ein Text einen Doppelpunkt mit Leerzeichen danach, setze ihn in "Anführungszeichen".
+#   • Längere Texte stehen nach  >-  eingerückt auf den nächsten Zeilen.
+#   • Einträge in Listen beginnen mit  -  (Bindestrich). Einfach kopieren, um einen neuen hinzuzufügen.
+#   • Die englische Version liegt in  en.yaml  und hat genau denselben Aufbau.
+#   • Schweizer Rechtschreibung: "ss" statt "ß".
+# ════════════════════════════════════════════════════════════════════
+
+meta:
+  sprache: Deutsch
+  rolle: Angehender Software Engineer
+  seiten_suffix: Kaan Kaya
+  beschreibung: >-
+    Kaan Kaya aus Zug – angehender Software Engineer. Informatik an der WISS Zürich,
+    ab 2027 Lehre als Informatiker Applikationsentwicklung bei Roche. Projekte, Skills, Blog und Kontakt.
+
+nav:
+  start: Über mich
+  projekte: Projekte
+  skills: Skills
+  blog: Blog
+  kontakt: Kontakt
+  jetzt: Jetzt
+  lebenslauf: Lebenslauf
+  datenschutz: Datenschutz
+  hauptnavigation: Hauptnavigation
+  menue: Menü öffnen
+  menue_titel: Navigation
+  menue_schliessen: Menü schliessen
+  suche: Suchen
+  suche_lang: Suchen oder Befehl eingeben
+  sprache_wechseln: English version
+  theme_wechseln: Farbmodus wechseln
+  zum_inhalt: Zum Inhalt springen
+  weitere: Mehr
+
+status:
+  erreichbar: Erreichbar
+  offline: Offline
+  ortszeit: Ortszeit in Zug
+
+allgemein:
+  kopieren: Kopieren
+  kopiert: Kopiert!
+  lesezeit: Min. Lesezeit
+  aktualisiert: Zuletzt aktualisiert
+  neu: Neu
+  mehr: Mehr erfahren
+  zurueck: Zurück
+  alle_ansehen: Alle ansehen
+  oeffnet_neues_fenster: öffnet in neuem Fenster
+  e_mail: E-Mail
+  instagram: Instagram
+
+footer:
+  claim: Danke fürs Vorbeischauen.
+  gebaut: Gebaut mit Astro · ohne Tracking · ohne Cookies
+  terminal_hinweis: "Tipp: Die Taste links neben der 1 öffnet den Terminal-Modus."
+  rechte: Alle Rechte vorbehalten.
+  bereiche: Seiten
+  kontakt: Kontakt
+  rss: RSS-Feed
+
+# ─────────────────────────────── STARTSEITE ───────────────────────────────
+start:
+  seo_titel: Kaan Kaya – Angehender Software Engineer aus Zug
+  badge: Ab 2027 Lehre als Applikationsentwickler bei Roche
+  titel: Angehender
+  titel_akzent: Software Engineer.
+  intro: >-
+    Ich bin Kaan, lerne Informatik an der WISS in Zürich und starte 2027 meine
+    Lehre als Informatiker Applikationsentwicklung bei Roche in Rotkreuz. Ich baue Dinge fürs Web, lerne jeden
+    Tag dazu.
+  cta_projekte: Projekte ansehen
+  cta_kontakt: Kontakt aufnehmen
+
+  karte:
+    titel: Steckbrief
+    untertitel: Kurz & knapp
+    foto_alt: Porträt von Kaan Kaya
+    felder:
+      - label: Wohnort
+        wert: Zug, Schweiz
+      - label: Schule
+        wert: WISS Zürich
+      - label: Ab 2027
+        wert: Lehre bei Roche
+      - label: Programmiere mit
+        wert: JavaScript · Python
+      - label: Sprachen
+        wert: Deutsch · Türkisch · Englisch
+      - label: Hobbys
+        wert: Boxen · Gym · Go-Kart · Ski
+
+  fakten:
+    - wert: C1
+      label: Cambridge English Advanced
+    - wert: "3"
+      label: Sprachen fliessend
+    - wert: "2027"
+      label: Lehrstart bei Roche
+    - wert: "13"
+      label: Jahre alt beim ersten Boxtraining
+
+  motto:
+    eyebrow: Mein Leitsatz
+    zitat: >-
+      Man kann körperlich so stark sein, wie man will – wenn man beim Morgengebet
+      die Decke nicht hochheben kann, ist man schwach.
+
+  weg:
+    eyebrow: Mein Weg
+    titel: Kein gerader Weg. Aber meiner.
+    intro: >-
+      Von der ersten Faszination für Computer bis zur Zusage von Roche – mit
+      Umwegen, Rückschlägen und einem Jahr allein in England.
+    eintraege:
+      - zeit: Kindheit
+        typ: start
+        titel: Die Faszination beginnt
+        text: >-
+          Schon als Kind verbringe ich viel Zeit am Computer und liebe Videospiele.
+          Früh ist mir klar: Technologie ist die Zukunft – und ich will ein Teil davon sein.
+      - zeit: Mit 13
+        typ: sport
+        titel: Der erste Boxhandschuh
+        text: >-
+          Ich fange mit dem Boxen an und trainiere bis heute aktiv. Das Training bringt mir
+          Disziplin und Geduld – auch ausserhalb der Halle.
+      - zeit: Oberstufe
+        typ: rueckschlag
+        titel: Alles gegeben – und trotzdem keine Lehrstelle
+        text: >-
+          Ich arbeite hart an meinen Bewerbungen, doch am Ende reicht es nicht.
+          Statt zu warten, treffe ich eine Entscheidung.
+      - zeit: 2025 – 2026
+        typ: bildung
+        titel: Ein Jahr allein in England
+        text: >-
+          Ganz auf mich gestellt: Englisch perfektionieren, selbstständig werden und
+          lernen, auf eigenen Füssen zu stehen. Am Ende halte ich zwei Zertifikate in der Hand.
+        tags: [Cambridge C1 Advanced, ECDL]
+      - zeit: 2026
+        typ: rueckschlag
+        titel: So knapp dran
+        text: >-
+          Für eine Lehre als Applikationsentwickler im Bereich Cybersecurity komme ich
+          unter die letzten zwei – und erhalte doch eine Absage. Das war eine grosse
+          Enttäuschung. Ich habe trotzdem weitergemacht.
+      - zeit: 2026
+        typ: meilenstein
+        titel: Die Zusage von Roche
+        text: >-
+          Nach viel Arbeit und Schweiss ist sie da: die Zusage für eine Lehre als Informatiker
+          Applikationsentwicklung bei Roche – einem der weltweit führenden Gesundheitsunternehmen
+          und bekannt für seine starke Informatik-Ausbildung. Am Ende doch Applikationsentwickler.
+      - zeit: 2026 – 2027
+        typ: jetzt
+        titel: WISS Zürich
+        text: >-
+          Damit kein Jahr verloren geht, besuche ich die Informatik-Wirtschaftsschule WISS
+          in Zürich – als gezielte Vorbereitung, damit ich zum Lehrstart bereit bin.
+      - zeit: 2027
+        typ: zukunft
+        titel: Lehrstart bei Roche in Rotkreuz
+        text: Start meiner Lehre als Informatiker Applikationsentwicklung.
+      - zeit: In 5 Jahren
+        typ: ziel
+        titel: Das Ziel
+        text: >-
+          Lehre abgeschlossen, Studium an einer guten internationalen Universität –
+          und im Boxen etwas erreicht. Mein grosses Ziel: Schweizer Meister bei den Amateuren.
+          Und mein Traum für später: eine eigene Firma, die Software entwickelt.
+    jetzt_label: Jetzt
+
+  werte:
+    eyebrow: Werte
+    titel: Worauf du dich verlassen kannst.
+    intro: Was mir in der Arbeit – und im Team – am wichtigsten ist.
+    liste:
+      - icon: shield-check
+        titel: Zuverlässigkeit
+        text: Wenn ich etwas zusage, halte ich es. Gründlich, pünktlich und ohne Ausreden.
+      - icon: handshake
+        titel: Loyalität
+        text: Ich stehe zu meinem Team und zu den Menschen, mit denen ich arbeite – auch wenn es schwierig wird.
+      - icon: heart-handshake
+        titel: Support
+        text: Ich helfe gern und bin gern im Team. Gemeinsam kommt man weiter als allein.
+      - icon: flame
+        titel: Durchhaltevermögen
+        text: Rückschläge gehören dazu. Ich lerne daraus und mache weiter.
+
+  freizeit:
+    eyebrow: Ausserhalb vom Code
+    titel: Was ich neben dem Programmieren mache.
+    intro: Sport ist für mich der perfekte Ausgleich.
+    liste:
+      - icon: hand-fist
+        titel: Boxen
+        text: Seit ich 13 bin, trainiere ich aktiv. Mein Ziel ist der Schweizer Meistertitel bei den Amateuren.
+        highlight: Ziel – Schweizer Meister
+      - icon: dumbbell
+        titel: Gym
+        text: Krafttraining gehört fest zu meiner Woche. Routine, die sich auf alles überträgt.
+      - icon: flag
+        titel: Go-Kart
+        text: Seit Jahren auf der Strecke – und ziemlich schnell unterwegs.
+      - icon: mountain-snow
+        titel: Ski
+        text: Auf den Ski, seit ich drei oder vier bin. Fast jeden Winter geht es in die Berge.
+
+  sprachen:
+    eyebrow: Sprachen
+    titel: Ich spreche deine Sprache.
+    liste:
+      - sprache: Türkisch
+        niveau: Muttersprache
+        stufe: 5
+      - sprache: Deutsch
+        niveau: Muttersprachlich
+        stufe: 5
+      - sprache: Englisch
+        niveau: C1 · Cambridge Advanced
+        stufe: 4
+      - sprache: Französisch
+        niveau: Grundkenntnisse
+        stufe: 1
+      - sprache: Japanisch
+        niveau: Grundkenntnisse
+        stufe: 1
+
+  reaktion:
+    eyebrow: Probier's aus
+    titel: Wie schnell sind deine Reflexe?
+    text: >-
+      Mein erstes Web-Projekt war eine Sammlung von Mini-Spielen – das Reaktionsspiel
+      gibt es hier in neuer Version. Warte, bis das Feld leuchtet, dann klick so schnell du kannst.
+    start: Starten
+    anleitung: Klick, tippe oder drücke die Leertaste, um zu starten.
+    warten: Warte …
+    warten_hinweis: Noch nicht klicken!
+    los: JETZT!
+    zu_frueh: Zu früh!
+    zu_frueh_text: Warte, bis das Feld grün wird. Nochmal.
+    ergebnis: Deine Zeit
+    runde: Runde
+    von: von
+    weiter: Klick für die nächste Runde
+    schnitt: Dein Schnitt
+    bestzeit: Bestzeit
+    noch_keine: –
+    nochmal: Nochmal spielen
+    bewertungen:
+      - bis: 180
+        text: Unglaublich schnell.
+      - bis: 230
+        text: Blitzschnell.
+      - bis: 280
+        text: Stark. Gute Reaktion.
+      - bis: 350
+        text: Solide. Mit Training geht noch mehr.
+      - bis: 99999
+        text: Aufwärmen und nochmal – das wird!
+
+  projekte_teaser:
+    eyebrow: Projekte
+    titel: Was ich gebaut habe.
+  blog_teaser:
+    eyebrow: Blog
+    titel: Gedanken & Geschichten.
+  jetzt_teaser:
+    eyebrow: Gerade jetzt
+    titel: Woran ich gerade arbeite.
+    link: Alles auf der Jetzt-Seite
+  cta:
+    titel: Lass uns in Kontakt bleiben.
+    text: Ob Frage, Idee oder einfach ein Hallo – ich freue mich über jede Nachricht.
+    knopf: Schreib mir
+
+# ─────────────────────────────── PROJEKTE ───────────────────────────────
+projekte:
+  seo_titel: Projekte
+  seo_beschreibung: Projekte von Kaan Kaya – vom selbstfahrenden Roboter über eine Mini-Spiele-Sammlung bis zu dieser Website.
+  eyebrow: Projekte & Case Studies
+  titel: Was ich gebaut habe.
+  intro: >-
+    Vom ersten Roboter bis zu dieser Website: Jedes Projekt hat mir etwas beigebracht.
+    Hier siehst du, was ich gebaut habe – und was ich dabei gelernt habe.
+  filter_label: Projekte filtern
+  filter:
+    alle: Alle
+    web: Web
+    hardware: Hardware
+    spiel: Spiele
+    sport: Sport
+  case_study: Case Study lesen
+  rolle: Rolle
+  stack: Technik
+  jahr: Jahr
+  status: Status
+  live: Live ansehen
+  code: Code ansehen
+  alle_projekte: Alle Projekte
+  naechstes: Nächstes Projekt
+  selbst_testen: Selbst testen
+  app_oeffnen: Timer öffnen
+  cta_titel: Du hast eine Idee für ein Projekt?
+  cta_text: Ich lerne am meisten, wenn ich echte Dinge baue. Schreib mir.
+  cta_knopf: Lass uns reden
+
+# ─────────────────────────────── BOX-TIMER ───────────────────────────────
+boxtimer:
+  seo_titel: Box-Timer
+  seo_beschreibung: Kostenloser Rundentimer fürs Boxtraining – mit Gong, 10-Sekunden-Warnung und Bildschirm, der anbleibt. Von Kaan Kaya.
+  eyebrow: Werkzeug · Box-Timer
+  titel: Rundentimer fürs Boxtraining.
+  intro: >-
+    Den nutze ich selbst im Training: Runden und Pausen einstellen, Start drücken, Handy
+    hinlegen. Ein Gong startet und beendet jede Runde, 10 Sekunden vor Schluss kommt ein Warnsignal.
+  einstellungen: Einstellungen
+  runden: Runden
+  rundenzeit: Rundenzeit
+  pause: Pause
+  vorbereitung: Vorbereitung
+  gesamt: Gesamtdauer
+  start: Start
+  pausieren: Pause
+  weiter: Weiter
+  zuruecksetzen: Zurücksetzen
+  vollbild: Vollbild
+  ton_an: Ton an
+  ton_aus: Ton aus
+  runde: Runde
+  von: von
+  phase_bereit: Bereit
+  phase_vorbereitung: Gleich geht's los
+  phase_runde: Runde
+  phase_pause: Pause
+  phase_fertig: Training fertig
+  fertig_text: Gut gemacht!
+  letzte_sekunden: Noch 10 Sekunden
+  weniger: weniger
+  mehr: mehr
+  tipp_titel: Tipps
+  tipps:
+    - Stell den Ton deines Handys laut – der Gong ist auch im Gym gut hörbar.
+    - Der Bildschirm bleibt an, solange der Timer läuft.
+    - Deine Einstellungen werden gespeichert.
+    - Über „Zum Home-Bildschirm“ im Browser installierst du den Timer wie eine App.
+  kein_js: Der Box-Timer braucht JavaScript. Bitte aktiviere es in deinem Browser.
+  projekt_link: Wie der Timer entstanden ist
+
+# ─────────────────────────────── SKILLS ───────────────────────────────
+skills:
+  seo_titel: Skills & Werkzeuge
+  seo_beschreibung: Skills, Werkzeuge, Zertifikate und Sprachen von Kaan Kaya – ehrlich eingeschätzt, mit Lern-Roadmap.
+  eyebrow: Skills & Werkzeuge
+  titel: Was ich kann – und was ich lerne.
+  intro: >-
+    Hier steht ehrlich, was ich kann, was ich gerade lerne und was als Nächstes kommt.
+    Keine erfundenen Prozentzahlen – nur echte Einschätzungen.
+  legende_titel: So lese ich die Stufen
+  stufen:
+    - Als Nächstes
+    - Grundlagen
+    - Anwendung
+    - Sicher
+  gruppen:
+    - titel: Programmieren
+      icon: code-xml
+      eintraege:
+        - name: JavaScript
+          stufe: 2
+          text: Meine Hauptsprache – für Websites und Spiele.
+        - name: HTML & CSS
+          stufe: 2
+          text: Struktur und Design meiner Websites.
+        - name: Python
+          stufe: 1
+          text: Erste Programme und Übungen.
+        - name: C#
+          stufe: 0
+          text: Als Nächstes auf dem Plan – passend zur Lehre.
+        - name: F#
+          stufe: 0
+          text: Steht auf meiner Liste.
+    - titel: Werkzeuge
+      icon: wrench
+      eintraege:
+        - name: Visual Studio
+          stufe: 2
+          text: Mein Editor für fast alles.
+        - name: Netlify
+          stufe: 2
+          text: Veröffentlichung meiner Websites.
+        - name: Astro
+          stufe: 1
+          text: Das Framework hinter dieser Website.
+    - titel: Hardware & Digital
+      icon: cpu
+      eintraege:
+        - name: Robotik
+          stufe: 1
+          text: Selbstfahrender Roboter als erstes Projekt.
+        - name: Office & digitale Grundlagen
+          stufe: 3
+          text: Zertifiziert mit dem ECDL.
+  zertifikate_titel: Zertifikate
+  zertifikate:
+    - name: Cambridge C1 Advanced
+      aussteller: Cambridge English
+      text: Englisch auf fortgeschrittenem Niveau (C1) – erworben während meines Jahres in England.
+      icon: languages
+    - name: ECDL
+      aussteller: European Computer Driving Licence
+      text: Internationales Zertifikat für digitale Grundkompetenzen.
+      icon: badge-check
+  soft_titel: Stärken
+  soft:
+    - Hilfsbereit
+    - Teamfähig
+    - Zuverlässig
+    - Loyal
+    - Durchhaltevermögen
+    - Selbstständig
+  lernen:
+    eyebrow: Wie ich lerne
+    titel: So lerne ich.
+    intro: Schritt für Schritt – mit echten Projekten.
+    schritte:
+      - titel: Verstehen
+        text: Erst verstehen, wie etwas funktioniert – dann loslegen.
+      - titel: Ausprobieren
+        text: Kleine Experimente, schnelle Fehler, viel dazulernen.
+      - titel: Bauen
+        text: Echte Projekte statt nur Theorie. Etwas, das man anfassen kann.
+      - titel: Dranbleiben
+        text: Jeden Tag ein bisschen besser werden.
+  roadmap:
+    eyebrow: Roadmap
+    titel: Wohin die Reise geht.
+    schritte:
+      - zeit: Jetzt
+        titel: WISS Zürich
+        text: Informatik & Wirtschaft, JavaScript vertiefen, eigene Projekte.
+      - zeit: 2027
+        titel: Lehre bei Roche
+        text: Lehre als Informatiker Applikationsentwicklung in Rotkreuz. C# und professionelle Softwareentwicklung.
+      - zeit: Danach
+        titel: Studium international
+        text: Studium an einer guten internationalen Universität.
+  setup:
+    eyebrow: Setup
+    titel: Womit ich arbeite.
+    liste:
+      - kategorie: Editor
+        name: Visual Studio
+      - kategorie: Sprachen
+        name: JavaScript, Python
+      - kategorie: Hosting
+        name: Netlify
+      - kategorie: Framework
+        name: Astro
+  lebenslauf:
+    titel: Lebenslauf
+    text: Alle Stationen, Zertifikate und Kenntnisse auf einen Blick – als Seite oder als PDF.
+    ansehen: Lebenslauf ansehen
+    pdf: PDF herunterladen
+
+# ─────────────────────────────── KONTAKT ───────────────────────────────
+kontakt:
+  seo_titel: Kontakt
+  seo_beschreibung: Kontakt zu Kaan Kaya – per Formular, E-Mail oder Instagram. Erreichbar 7 Tage die Woche.
+  eyebrow: Kontakt
+  titel: Lass uns reden.
+  intro: >-
+    Ob Frage, Idee, Zusammenarbeit oder einfach ein Hallo – schreib mir.
+    Ich bin 7 Tage die Woche tagsüber erreichbar.
+  direkt: Direkt
+  ort_label: Standort
+  ort: Zug, Schweiz
+  karte_alt: Karte der Schweiz mit Zug, Zürich und Rotkreuz
+  karte_orte:
+    zug: Zug · Zuhause
+    zurich: Zürich · WISS
+    rotkreuz: Rotkreuz · Roche
+  formular:
+    titel: Nachricht schreiben
+    text: Fülle die Felder aus – ich melde mich so schnell wie möglich.
+    name: Dein Name
+    name_platzhalter: z. B. Alex Müller
+    email: Deine E-Mail-Adresse
+    email_platzhalter: name@beispiel.ch
+    thema: Worum geht's?
+    themen:
+      - Zusammenarbeit
+      - Frage
+      - Feedback
+      - Einfach Hallo
+    nachricht: Deine Nachricht
+    nachricht_platzhalter: Erzähl mir, worum es geht …
+    pflicht: Pflichtfeld
+    senden: Nachricht senden
+    sendet: Wird gesendet …
+    datenschutz_hinweis: Deine Angaben nutze ich nur, um dir zu antworten. Mehr dazu im
+    datenschutz_link: Datenschutz
+    fehler_name: Bitte gib deinen Namen ein.
+    fehler_email: Bitte gib eine gültige E-Mail-Adresse ein.
+    fehler_nachricht: Bitte schreib mindestens ein paar Worte (10 Zeichen).
+    fehler_senden: Das hat leider nicht geklappt. Schreib mir direkt per E-Mail.
+    erfolg_titel: Danke – deine Nachricht ist angekommen!
+    erfolg_text: Ich melde mich so schnell wie möglich bei dir.
+    erfolg_nochmal: Weitere Nachricht schreiben
+  danke:
+    seo_titel: Danke für deine Nachricht
+    titel: Danke! Deine Nachricht ist angekommen.
+    text: Ich melde mich so schnell wie möglich bei dir. In der Zwischenzeit kannst du gern weiter stöbern.
+    zurueck: Zur Startseite
+  faq_titel: Häufige Fragen
+  faq:
+    - frage: Wie erreiche ich dich am schnellsten?
+      antwort: Per E-Mail oder über das Formular hier. Ich bin 7 Tage die Woche tagsüber erreichbar und antworte so schnell ich kann.
+    - frage: In welchen Sprachen kann ich dir schreiben?
+      antwort: Auf Deutsch, Englisch oder Türkisch – such dir eine aus.
+    - frage: Wo bist du zu Hause?
+      antwort: In Zug in der Schweiz. Zur Schule gehe ich in Zürich, meine Lehre bei Roche startet 2027 in Rotkreuz.
+    - frage: Bist du offen für Ideen und Zusammenarbeit?
+      antwort: Ja! Ich lerne am meisten mit echten Projekten. Schreib mir einfach, worum es geht.
+
+# ─────────────────────────────── BLOG ───────────────────────────────
+blog:
+  seo_titel: Blog
+  seo_beschreibung: Der Blog von Kaan Kaya – Geschichten über Rückschläge, Lernen, Boxen und Softwareentwicklung.
+  eyebrow: Blog
+  titel: Gedanken, Geschichten, Gelerntes.
+  intro: Hier schreibe ich über meinen Weg in die Informatik, über Projekte und über das, was ich dabei lerne.
+  leer: Bald gibt es hier die ersten Beiträge.
+  weiterlesen: Weiterlesen
+  alle_beitraege: Alle Beiträge
+  veroeffentlicht: Veröffentlicht am
+  auch_auf: Auch auf Englisch lesen
+
+# ─────────────────────────────── JETZT ───────────────────────────────
+jetzt:
+  seo_titel: Jetzt
+  seo_beschreibung: Woran Kaan Kaya gerade arbeitet, was er lernt und wofür er trainiert.
+  eyebrow: Jetzt
+  titel: Was ich gerade mache.
+  intro: >-
+    Eine Momentaufnahme meines Lebens – was mich gerade beschäftigt. Inspiriert von der
+    /now-Bewegung.
+  intro_link_text: Mehr über /now-Seiten
+  liste:
+    - icon: graduation-cap
+      titel: Lernen
+      text: Informatik & Wirtschaft an der WISS in Zürich – meine Vorbereitung auf die Lehre.
+    - icon: hammer
+      titel: Bauen
+      text: Diese Website – und weitere JavaScript-Projekte.
+    - icon: code-xml
+      titel: Als Nächstes
+      text: C# lernen, rechtzeitig vor dem Lehrstart bei Roche.
+    - icon: hand-fist
+      titel: Trainieren
+      text: Boxen und Gym. Ziel – Schweizer Meister bei den Amateuren.
+    - icon: calendar-check
+      titel: Vorfreude
+      text: Auf 2027 und den Start bei Roche in Rotkreuz.
+
+# ─────────────────────────────── LEBENSLAUF ───────────────────────────────
+lebenslauf:
+  seo_titel: Lebenslauf
+  seo_beschreibung: Lebenslauf von Kaan Kaya – Ausbildung, Zertifikate, Sprachen, Kenntnisse und Projekte.
+  titel: Lebenslauf
+  pdf: PDF herunterladen
+  drucken: Drucken
+  profil_titel: Profil
+  profil: >-
+    Angehender Software Engineer aus Zug. Nach einem Sprachjahr in England
+    (Cambridge C1 Advanced) bereite ich mich an der WISS Zürich auf meine Lehre als
+    Informatiker Applikationsentwicklung bei Roche vor, die 2027 beginnt. Hilfsbereit, teamfähig
+    und zuverlässig.
+  ausbildung_titel: Ausbildung
+  ausbildung:
+    - zeit: ab 2027
+      titel: Informatiker EFZ Applikationsentwicklung (Lehre)
+      ort: Roche, Rotkreuz
+    - zeit: 2026 – 2027
+      titel: Informatik-Wirtschaftsschule
+      ort: WISS, Zürich
+    - zeit: 2025 – 2026
+      titel: Sprach- und Selbstständigkeitsjahr
+      ort: England
+      text: Cambridge C1 Advanced · ECDL
+    - zeit: bis 2025
+      titel: Oberstufe
+  zertifikate_titel: Zertifikate
+  sprachen_titel: Sprachen
+  kenntnisse_titel: Kenntnisse
+  projekte_titel: Projekte
+  interessen_titel: Interessen
+  interessen: Boxen (aktiv seit 13) · Gym · Go-Kart · Ski
+  kontakt_titel: Kontakt
+  stand: Stand
+
+# ─────────────────────────────── DATENSCHUTZ ───────────────────────────────
+datenschutz:
+  seo_titel: Datenschutz
+  seo_beschreibung: Datenschutzerklärung der Website von Kaan Kaya.
+
+# ─────────────────────────────── 404 ───────────────────────────────
+fehler:
+  seo_titel: Seite nicht gefunden
+  code: "404"
+  titel: Diese Seite gibt es nicht.
+  text: Vielleicht hat sich die Adresse geändert. Geh zurück zur Startseite oder such, was du brauchst.
+  start: Zur Startseite
+  suche: Seite suchen
+
+# ─────────────────────────────── BEFEHLSPALETTE (⌘K) ───────────────────────────────
+palette:
+  platzhalter: Suche Seiten, Projekte, Beiträge oder Befehle …
+  keine_treffer: Nichts gefunden. Probier einen anderen Begriff.
+  gruppen:
+    seiten: Seiten
+    projekte: Projekte
+    blog: Blog
+    aktionen: Aktionen
+  aktionen:
+    email: E-Mail-Adresse kopieren
+    theme: Hell/Dunkel umschalten
+    sprache: Switch to English
+    terminal: Terminal-Modus öffnen
+    spiel: Reaktionstest starten
+    pdf: Lebenslauf als PDF
+    instagram: Instagram öffnen
+  hinweise:
+    navigieren: navigieren
+    oeffnen: öffnen
+    schliessen: schliessen

@@ -1,0 +1,106 @@
+---
+/** Untere Navigationsleiste auf dem Handy – wie in einer App. */
+import Icon from './Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, route } from '../lib/i18n';
+import type { NavKey } from '../layouts/Base.astro';
+
+interface Props {
+  lang: Lang;
+  aktiv: NavKey;
+}
+const { lang, aktiv } = Astro.props;
+const tx = t(lang);
+const tabs = [
+  { key: 'start', label: tx.nav.start, icon: 'user' },
+  { key: 'projekte', label: tx.nav.projekte, icon: 'folder-code' },
+  { key: 'skills', label: tx.nav.skills, icon: 'layers' },
+  { key: 'blog', label: tx.nav.blog, icon: 'pen-line' },
+  { key: 'kontakt', label: tx.nav.kontakt, icon: 'at-sign' },
+] as const;
+---
+<nav class="tabbar vt-tabbar" aria-label={tx.nav.hauptnavigation}>
+  <ul role="list">
+    {
+      tabs.map((tab) => (
+        <li>
+          <a href={route(tab.key, lang)} aria-current={aktiv === tab.key ? 'page' : undefined}>
+            <span class="tab-icon">
+              <Icon name={tab.icon} size={21} strokeWidth={aktiv === tab.key ? 2.3 : 1.8} />
+            </span>
+            <span class="tab-label">{tab.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .tabbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 40;
+    padding: 0.35rem 0.5rem calc(0.35rem + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(160%) blur(20px);
+    -webkit-backdrop-filter: saturate(160%) blur(20px);
+    border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  }
+  ul {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    max-width: 32rem;
+    margin-inline: auto;
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.3rem 0 0.25rem;
+    border-radius: var(--radius);
+    color: var(--text-subtle);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: color var(--dur) var(--ease-out);
+  }
+  .tab-icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 1.9rem;
+    border-radius: var(--radius-full);
+    transition:
+      background-color var(--dur) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  a:active .tab-icon {
+    transform: scale(0.92);
+  }
+  a:hover {
+    color: var(--text);
+  }
+  a[aria-current='page'] {
+    color: var(--text);
+  }
+  a[aria-current='page'] .tab-icon {
+    background: var(--primary-soft);
+    color: var(--primary-text);
+    box-shadow: 0 0 0 1px var(--primary-line) inset;
+  }
+  .tab-label {
+    white-space: nowrap;
+  }
+  @media (min-width: 860px) {
+    .tabbar {
+      display: none;
+    }
+  }
+  @media print {
+    .tabbar {
+      display: none;
+    }
+  }
+</style>

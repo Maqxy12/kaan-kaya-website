@@ -1,0 +1,637 @@
+# ════════════════════════════════════════════════════════════════════
+#  ALL ENGLISH TEXTS OF THE WEBSITE
+#  Same structure as de.yaml – only change the text to the RIGHT of the colon.
+# ════════════════════════════════════════════════════════════════════
+
+meta:
+  sprache: English
+  rolle: Aspiring Software Engineer
+  seiten_suffix: Kaan Kaya
+  beschreibung: >-
+    Kaan Kaya from Zug, Switzerland – aspiring software engineer. Studying IT at WISS Zurich,
+    starting an apprenticeship as an application developer at Roche in 2027. Projects, skills, blog and contact.
+
+nav:
+  start: About
+  projekte: Projects
+  skills: Skills
+  blog: Blog
+  kontakt: Contact
+  jetzt: Now
+  lebenslauf: CV
+  datenschutz: Privacy
+  hauptnavigation: Main navigation
+  menue: Open menu
+  menue_titel: Navigation
+  menue_schliessen: Close menu
+  suche: Search
+  suche_lang: Search or type a command
+  sprache_wechseln: Deutsche Version
+  theme_wechseln: Toggle colour mode
+  zum_inhalt: Skip to content
+  weitere: More
+
+status:
+  erreichbar: Available
+  offline: Offline
+  ortszeit: Local time in Zug
+
+allgemein:
+  kopieren: Copy
+  kopiert: Copied!
+  lesezeit: min read
+  aktualisiert: Last updated
+  neu: New
+  mehr: Learn more
+  zurueck: Back
+  alle_ansehen: View all
+  oeffnet_neues_fenster: opens in a new window
+  e_mail: Email
+  instagram: Instagram
+
+footer:
+  claim: Thanks for stopping by.
+  gebaut: Built with Astro · no tracking · no cookies
+  terminal_hinweis: "Tip: the key left of 1 opens terminal mode."
+  rechte: All rights reserved.
+  bereiche: Pages
+  kontakt: Contact
+  rss: RSS feed
+
+# ─────────────────────────────── HOME ───────────────────────────────
+start:
+  seo_titel: Kaan Kaya – Aspiring Software Engineer from Zug, Switzerland
+  badge: Application developer apprenticeship at Roche from 2027
+  titel: Software engineer
+  titel_akzent: in the making.
+  intro: >-
+    I'm Kaan. I study IT at WISS in Zurich and start my apprenticeship as an
+    application developer at Roche in Rotkreuz in 2027. I build things for the web and
+    learn something new every day.
+  cta_projekte: View projects
+  cta_kontakt: Get in touch
+
+  karte:
+    titel: Fact sheet
+    untertitel: At a glance
+    foto_alt: Portrait of Kaan Kaya
+    felder:
+      - label: Based in
+        wert: Zug, Switzerland
+      - label: School
+        wert: WISS Zurich
+      - label: From 2027
+        wert: Apprenticeship at Roche
+      - label: Coding in
+        wert: JavaScript · Python
+      - label: Languages
+        wert: German · Turkish · English
+      - label: Hobbies
+        wert: Boxing · Gym · Karting · Skiing
+
+  fakten:
+    - wert: C1
+      label: Cambridge English Advanced
+    - wert: "3"
+      label: Languages spoken fluently
+    - wert: "2027"
+      label: Apprenticeship starts at Roche
+    - wert: "13"
+      label: Years old at my first boxing session
+
+  motto:
+    eyebrow: My guiding principle
+    zitat: >-
+      You can be as physically strong as you want – if you can't lift your blanket
+      for the morning prayer, you are weak.
+
+  weg:
+    eyebrow: My journey
+    titel: Not a straight path. But mine.
+    intro: >-
+      From my first fascination with computers to an offer from Roche – with detours,
+      setbacks and a year on my own in England.
+    eintraege:
+      - zeit: Childhood
+        typ: start
+        titel: The fascination begins
+        text: >-
+          As a kid I spend a lot of time on the computer and love video games.
+          Early on I know: technology is the future – and I want to be part of it.
+      - zeit: Age 13
+        typ: sport
+        titel: My first boxing gloves
+        text: >-
+          I start boxing and still train actively today. Training gives me discipline and
+          patience – outside the gym too.
+      - zeit: Secondary school
+        typ: rueckschlag
+        titel: Gave it everything – still no apprenticeship
+        text: >-
+          I work hard on my applications, but in the end it isn't enough.
+          Instead of waiting, I make a decision.
+      - zeit: 2025 – 2026
+        typ: bildung
+        titel: A year on my own in England
+        text: >-
+          Completely on my own: perfecting my English, becoming independent and learning
+          to stand on my own two feet. I come home with two certificates.
+        tags: [Cambridge C1 Advanced, ECDL]
+      - zeit: 2026
+        typ: rueckschlag
+        titel: So close
+        text: >-
+          For an apprenticeship as an application developer in cybersecurity, I make it
+          to the final two – and still get a rejection. That was a big disappointment.
+          I kept going anyway.
+      - zeit: 2026
+        typ: meilenstein
+        titel: The offer from Roche
+        text: >-
+          After a lot of hard work, it finally arrives: an offer for an apprenticeship in
+          application development at Roche – one of the world's leading healthcare companies
+          and known for its outstanding IT training. An application developer after all.
+      - zeit: 2026 – 2027
+        typ: jetzt
+        titel: WISS Zurich
+        text: >-
+          So that no year goes to waste, I attend the IT business school WISS in Zurich –
+          focused preparation so I'm ready on day one of my apprenticeship.
+      - zeit: 2027
+        typ: zukunft
+        titel: Apprenticeship starts at Roche in Rotkreuz
+        text: The start of my apprenticeship in application development.
+      - zeit: In 5 years
+        typ: ziel
+        titel: The goal
+        text: >-
+          Apprenticeship completed, studying at a great international university – and
+          achievements in boxing. My big goal: Swiss amateur champion.
+          And my dream for later: my own company that builds software.
+    jetzt_label: Now
+
+  werte:
+    eyebrow: Values
+    titel: What you can count on.
+    intro: What matters most to me at work – and in a team.
+    liste:
+      - icon: shield-check
+        titel: Reliability
+        text: When I commit to something, I deliver. Thorough, on time, no excuses.
+      - icon: handshake
+        titel: Loyalty
+        text: I stand by my team and the people I work with – especially when it gets tough.
+      - icon: heart-handshake
+        titel: Support
+        text: I like helping and I love working in a team. Together you get further than alone.
+      - icon: flame
+        titel: Perseverance
+        text: Setbacks are part of it. I learn from them and keep going.
+
+  freizeit:
+    eyebrow: Beyond code
+    titel: What I do besides programming.
+    intro: Sport is the perfect balance for me.
+    liste:
+      - icon: hand-fist
+        titel: Boxing
+        text: I've been training actively since I was 13. My goal is the Swiss amateur title.
+        highlight: Goal – Swiss champion
+      - icon: dumbbell
+        titel: Gym
+        text: Strength training is a fixed part of my week. A routine that carries over into everything.
+      - icon: flag
+        titel: Go-karting
+        text: On the track for years – and pretty fast.
+      - icon: mountain-snow
+        titel: Skiing
+        text: On skis since I was three or four. Almost every winter I'm up in the mountains.
+
+  sprachen:
+    eyebrow: Languages
+    titel: I speak your language.
+    liste:
+      - sprache: Turkish
+        niveau: Native
+        stufe: 5
+      - sprache: German
+        niveau: Native-level
+        stufe: 5
+      - sprache: English
+        niveau: C1 · Cambridge Advanced
+        stufe: 4
+      - sprache: French
+        niveau: Basic
+        stufe: 1
+      - sprache: Japanese
+        niveau: Basic
+        stufe: 1
+
+  reaktion:
+    eyebrow: Try it
+    titel: How fast are your reflexes?
+    text: >-
+      My first web project was a collection of mini games – here's the reaction game
+      in a new version. Wait until the field lights up, then click as fast as you can.
+    start: Start
+    anleitung: Click, tap or press space to start.
+    warten: Wait …
+    warten_hinweis: Don't click yet!
+    los: NOW!
+    zu_frueh: Too early!
+    zu_frueh_text: Wait until the field turns green. Again.
+    ergebnis: Your time
+    runde: Round
+    von: of
+    weiter: Click for the next round
+    schnitt: Your average
+    bestzeit: Best time
+    noch_keine: –
+    nochmal: Play again
+    bewertungen:
+      - bis: 180
+        text: Unbelievably fast.
+      - bis: 230
+        text: Lightning fast.
+      - bis: 280
+        text: Strong. Great reaction.
+      - bis: 350
+        text: Solid. With training there's more.
+      - bis: 99999
+        text: Warm up and try again – you've got this!
+
+  projekte_teaser:
+    eyebrow: Projects
+    titel: Things I've built.
+  blog_teaser:
+    eyebrow: Blog
+    titel: Thoughts & stories.
+  jetzt_teaser:
+    eyebrow: Right now
+    titel: What I'm working on.
+    link: Everything on the Now page
+  cta:
+    titel: Let's stay in touch.
+    text: A question, an idea or just a hello – I'm happy about every message.
+    knopf: Write to me
+
+# ─────────────────────────────── PROJECTS ───────────────────────────────
+projekte:
+  seo_titel: Projects
+  seo_beschreibung: Projects by Kaan Kaya – from a self-driving robot and a mini games collection to this website.
+  eyebrow: Projects & case studies
+  titel: Things I've built.
+  intro: >-
+    From my first robot to this website: every project taught me something.
+    Here's what I built – and what I learned along the way.
+  filter_label: Filter projects
+  filter:
+    alle: All
+    web: Web
+    hardware: Hardware
+    spiel: Games
+    sport: Sport
+  case_study: Read case study
+  rolle: Role
+  stack: Tech
+  jahr: Year
+  status: Status
+  live: View live
+  code: View code
+  alle_projekte: All projects
+  naechstes: Next project
+  selbst_testen: Try it yourself
+  app_oeffnen: Open timer
+  cta_titel: Got an idea for a project?
+  cta_text: I learn the most by building real things. Write to me.
+  cta_knopf: Let's talk
+
+# ─────────────────────────────── BOXING TIMER ───────────────────────────────
+boxtimer:
+  seo_titel: Boxing timer
+  seo_beschreibung: Free round timer for boxing training – with bell, 10-second warning and a screen that stays on. By Kaan Kaya.
+  eyebrow: Tool · Boxing timer
+  titel: Round timer for boxing training.
+  intro: >-
+    I use this one in my own training: set rounds and rest, press start, put the phone down.
+    A bell starts and ends every round, and a warning sounds 10 seconds before the end.
+  einstellungen: Settings
+  runden: Rounds
+  rundenzeit: Round time
+  pause: Rest
+  vorbereitung: Get ready
+  gesamt: Total time
+  start: Start
+  pausieren: Pause
+  weiter: Resume
+  zuruecksetzen: Reset
+  vollbild: Fullscreen
+  ton_an: Sound on
+  ton_aus: Sound off
+  runde: Round
+  von: of
+  phase_bereit: Ready
+  phase_vorbereitung: Get ready
+  phase_runde: Round
+  phase_pause: Rest
+  phase_fertig: Workout done
+  fertig_text: Well done!
+  letzte_sekunden: 10 seconds left
+  weniger: less
+  mehr: more
+  tipp_titel: Tips
+  tipps:
+    - Turn your phone volume up – the bell is easy to hear even in the gym.
+    - The screen stays on while the timer is running.
+    - Your settings are saved.
+    - Use "Add to Home Screen" in your browser to install the timer like an app.
+  kein_js: The boxing timer needs JavaScript. Please enable it in your browser.
+  projekt_link: How the timer was made
+
+# ─────────────────────────────── SKILLS ───────────────────────────────
+skills:
+  seo_titel: Skills & tools
+  seo_beschreibung: Skills, tools, certificates and languages of Kaan Kaya – honestly rated, with a learning roadmap.
+  eyebrow: Skills & tools
+  titel: What I can do – and what I'm learning.
+  intro: >-
+    An honest look at what I can do, what I'm learning right now and what comes next.
+    No made-up percentages – just real self-assessment.
+  legende_titel: How to read the levels
+  stufen:
+    - Up next
+    - Basics
+    - Applied
+    - Confident
+  gruppen:
+    - titel: Programming
+      icon: code-xml
+      eintraege:
+        - name: JavaScript
+          stufe: 2
+          text: My main language – for websites and games.
+        - name: HTML & CSS
+          stufe: 2
+          text: Structure and design of my websites.
+        - name: Python
+          stufe: 1
+          text: First programs and exercises.
+        - name: C#
+          stufe: 0
+          text: Next on the plan – matching my apprenticeship.
+        - name: F#
+          stufe: 0
+          text: On my list.
+    - titel: Tools
+      icon: wrench
+      eintraege:
+        - name: Visual Studio
+          stufe: 2
+          text: My editor for almost everything.
+        - name: Netlify
+          stufe: 2
+          text: Publishing my websites.
+        - name: Astro
+          stufe: 1
+          text: The framework behind this website.
+    - titel: Hardware & digital
+      icon: cpu
+      eintraege:
+        - name: Robotics
+          stufe: 1
+          text: A self-driving robot as my very first project.
+        - name: Office & digital basics
+          stufe: 3
+          text: Certified with the ECDL.
+  zertifikate_titel: Certificates
+  zertifikate:
+    - name: Cambridge C1 Advanced
+      aussteller: Cambridge English
+      text: Advanced-level English (C1) – earned during my year in England.
+      icon: languages
+    - name: ECDL
+      aussteller: European Computer Driving Licence
+      text: International certificate for digital skills.
+      icon: badge-check
+  soft_titel: Strengths
+  soft:
+    - Helpful
+    - Team player
+    - Reliable
+    - Loyal
+    - Perseverance
+    - Independent
+  lernen:
+    eyebrow: How I learn
+    titel: How I learn.
+    intro: Step by step – with real projects.
+    schritte:
+      - titel: Understand
+        text: First understand how something works – then get going.
+      - titel: Experiment
+        text: Small experiments, fast mistakes, lots of learning.
+      - titel: Build
+        text: Real projects instead of just theory. Something you can touch.
+      - titel: Keep going
+        text: Getting a little better every day.
+  roadmap:
+    eyebrow: Roadmap
+    titel: Where I'm heading.
+    schritte:
+      - zeit: Now
+        titel: WISS Zurich
+        text: IT & business, deepening JavaScript, own projects.
+      - zeit: 2027
+        titel: Apprenticeship at Roche
+        text: Application development apprenticeship in Rotkreuz. C# and professional software development.
+      - zeit: After that
+        titel: University abroad
+        text: Studying at a great international university.
+  setup:
+    eyebrow: Setup
+    titel: What I work with.
+    liste:
+      - kategorie: Editor
+        name: Visual Studio
+      - kategorie: Languages
+        name: JavaScript, Python
+      - kategorie: Hosting
+        name: Netlify
+      - kategorie: Framework
+        name: Astro
+  lebenslauf:
+    titel: CV
+    text: All stages, certificates and skills at a glance – as a page or as a PDF.
+    ansehen: View CV
+    pdf: Download PDF
+
+# ─────────────────────────────── CONTACT ───────────────────────────────
+kontakt:
+  seo_titel: Contact
+  seo_beschreibung: Get in touch with Kaan Kaya – via form, email or Instagram. Available 7 days a week.
+  eyebrow: Contact
+  titel: Let's talk.
+  intro: >-
+    A question, an idea, a collaboration or just a hello – write to me.
+    I'm available 7 days a week during the day.
+  direkt: Direct
+  ort_label: Location
+  ort: Zug, Switzerland
+  karte_alt: Map of Switzerland showing Zug, Zurich and Rotkreuz
+  karte_orte:
+    zug: Zug · Home
+    zurich: Zurich · WISS
+    rotkreuz: Rotkreuz · Roche
+  formular:
+    titel: Send a message
+    text: Fill in the fields – I'll get back to you as soon as I can.
+    name: Your name
+    name_platzhalter: e.g. Alex Miller
+    email: Your email address
+    email_platzhalter: name@example.com
+    thema: What's it about?
+    themen:
+      - Collaboration
+      - Question
+      - Feedback
+      - Just saying hi
+    nachricht: Your message
+    nachricht_platzhalter: Tell me what it's about …
+    pflicht: Required
+    senden: Send message
+    sendet: Sending …
+    datenschutz_hinweis: I only use your details to reply to you. More in the
+    datenschutz_link: privacy policy
+    fehler_name: Please enter your name.
+    fehler_email: Please enter a valid email address.
+    fehler_nachricht: Please write at least a few words (10 characters).
+    fehler_senden: Unfortunately that didn't work. Please email me directly.
+    erfolg_titel: Thanks – your message has arrived!
+    erfolg_text: I'll get back to you as soon as I can.
+    erfolg_nochmal: Write another message
+  danke:
+    seo_titel: Thanks for your message
+    titel: Thanks! Your message has arrived.
+    text: I'll get back to you as soon as I can. In the meantime, feel free to keep browsing.
+    zurueck: Back to home
+  faq_titel: Frequently asked
+  faq:
+    - frage: What's the fastest way to reach you?
+      antwort: By email or through the form here. I'm available 7 days a week during the day and reply as fast as I can.
+    - frage: Which languages can I write to you in?
+      antwort: German, English or Turkish – pick one.
+    - frage: Where are you based?
+      antwort: In Zug, Switzerland. I go to school in Zurich, and my apprenticeship at Roche starts in Rotkreuz in 2027.
+    - frage: Are you open to ideas and collaboration?
+      antwort: Yes! I learn the most from real projects. Just write to me and tell me what it's about.
+
+# ─────────────────────────────── BLOG ───────────────────────────────
+blog:
+  seo_titel: Blog
+  seo_beschreibung: Kaan Kaya's blog – stories about setbacks, learning, boxing and software development.
+  eyebrow: Blog
+  titel: Thoughts, stories, lessons.
+  intro: I write about my path into IT, about projects and about what I learn along the way.
+  leer: The first posts are coming soon.
+  weiterlesen: Read more
+  alle_beitraege: All posts
+  veroeffentlicht: Published on
+  auch_auf: Auch auf Deutsch lesen
+
+# ─────────────────────────────── NOW ───────────────────────────────
+jetzt:
+  seo_titel: Now
+  seo_beschreibung: What Kaan Kaya is working on, learning and training for right now.
+  eyebrow: Now
+  titel: What I'm doing right now.
+  intro: >-
+    A snapshot of my life – what's on my mind at the moment. Inspired by the
+    /now movement.
+  intro_link_text: More about /now pages
+  liste:
+    - icon: graduation-cap
+      titel: Learning
+      text: IT & business at WISS in Zurich – my preparation for the apprenticeship.
+    - icon: hammer
+      titel: Building
+      text: This website – and more JavaScript projects.
+    - icon: code-xml
+      titel: Up next
+      text: Learning C#, in time for my start at Roche.
+    - icon: hand-fist
+      titel: Training
+      text: Boxing and gym. Goal – Swiss amateur champion.
+    - icon: calendar-check
+      titel: Looking forward to
+      text: 2027 and starting at Roche in Rotkreuz.
+
+# ─────────────────────────────── CV ───────────────────────────────
+lebenslauf:
+  seo_titel: CV
+  seo_beschreibung: CV of Kaan Kaya – education, certificates, languages, skills and projects.
+  titel: Curriculum Vitae
+  pdf: Download PDF
+  drucken: Print
+  profil_titel: Profile
+  profil: >-
+    Aspiring software engineer from Zug, Switzerland. After a language year in England
+    (Cambridge C1 Advanced), I'm preparing at WISS Zurich for my apprenticeship as an
+    application developer at Roche, starting in 2027. Helpful, a team player and reliable.
+  ausbildung_titel: Education
+  ausbildung:
+    - zeit: from 2027
+      titel: Application development apprenticeship (EFZ)
+      ort: Roche, Rotkreuz
+    - zeit: 2026 – 2027
+      titel: IT business school
+      ort: WISS, Zurich
+    - zeit: 2025 – 2026
+      titel: Language & independence year
+      ort: England
+      text: Cambridge C1 Advanced · ECDL
+    - zeit: until 2025
+      titel: Lower secondary school
+  zertifikate_titel: Certificates
+  sprachen_titel: Languages
+  kenntnisse_titel: Skills
+  projekte_titel: Projects
+  interessen_titel: Interests
+  interessen: Boxing (active since age 13) · Gym · Go-karting · Skiing
+  kontakt_titel: Contact
+  stand: As of
+
+# ─────────────────────────────── PRIVACY ───────────────────────────────
+datenschutz:
+  seo_titel: Privacy policy
+  seo_beschreibung: Privacy policy for Kaan Kaya's website.
+
+# ─────────────────────────────── 404 ───────────────────────────────
+fehler:
+  seo_titel: Page not found
+  code: "404"
+  titel: This page doesn't exist.
+  text: Maybe the address has changed. Head back to the home page or search for what you need.
+  start: Back to home
+  suche: Search the site
+
+# ─────────────────────────────── COMMAND PALETTE (⌘K) ───────────────────────────────
+palette:
+  platzhalter: Search pages, projects, posts or commands …
+  keine_treffer: Nothing found. Try another term.
+  gruppen:
+    seiten: Pages
+    projekte: Projects
+    blog: Blog
+    aktionen: Actions
+  aktionen:
+    email: Copy email address
+    theme: Toggle light/dark
+    sprache: Auf Deutsch wechseln
+    terminal: Open terminal mode
+    spiel: Start reaction test
+    pdf: CV as PDF
+    instagram: Open Instagram
+  hinweise:
+    navigieren: navigate
+    oeffnen: open
+    schliessen: close

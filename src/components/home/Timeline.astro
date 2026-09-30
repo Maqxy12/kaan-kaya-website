@@ -1,0 +1,260 @@
+---
+import SectionHead from '../SectionHead.astro';
+import Icon from '../Icon.astro';
+import { t } from '../../lib/texte';
+import type { Lang } from '../../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const w = t(Astro.props.lang).start.weg;
+const icons: Record<string, string> = {
+  start: 'gamepad-2',
+  sport: 'hand-fist',
+  rueckschlag: 'circle-alert',
+  bildung: 'graduation-cap',
+  meilenstein: 'trophy',
+  jetzt: 'map-pin',
+  zukunft: 'rocket',
+  ziel: 'target',
+};
+---
+<section class="container section" id="weg" aria-labelledby="weg-titel">
+  <SectionHead eyebrow={w.eyebrow} titel={w.titel} intro={w.intro} id="weg-titel" />
+  <div class="tl">
+  <span class="track" aria-hidden="true"><span class="progress"></span></span>
+  <ol class="timeline" role="list">
+    {
+      w.eintraege.map((e) => (
+        <li class="entry reveal" data-typ={e.typ}>
+          <span class="node" aria-hidden="true">
+            <Icon name={icons[e.typ]} size={16} />
+          </span>
+          <div class="when">
+            <span class="time">{e.zeit}</span>
+            {e.typ === 'jetzt' && (
+              <span class="now">
+                <span class="pulse-dot" aria-hidden="true" />
+                {w.jetzt_label}
+              </span>
+            )}
+          </div>
+          <div class="body">
+            <h3 class="h3">{e.titel}</h3>
+            <p>{e.text}</p>
+            {e.tags && (
+              <ul class="chips" role="list">
+                {e.tags.map((tag) => (
+                  <li class="chip chip--primary">
+                    <Icon name="badge-check" size={13} />
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  </div>
+</section>
+
+<style>
+  .tl {
+    --node: 2.25rem;
+    --col: 8.5rem;
+    position: relative;
+  }
+  .timeline {
+    display: grid;
+    gap: var(--space-3);
+    padding: 0;
+  }
+  .track {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: calc(var(--node) / 2 - 1px);
+    width: 2px;
+    border-radius: 2px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .progress {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, #60a5fa, #3b82f6 60%, #f97316);
+    transform-origin: top;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .tl {
+        view-timeline: --tl block;
+      }
+      .progress {
+        animation: grow linear both;
+        animation-timeline: --tl;
+        animation-range: entry 35% exit 65%;
+      }
+      @keyframes grow {
+        from {
+          transform: scaleY(0);
+        }
+        to {
+          transform: scaleY(1);
+        }
+      }
+    }
+  }
+
+  .entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--node) 1fr;
+    column-gap: var(--space-4);
+    row-gap: var(--space-1);
+  }
+  .node {
+    grid-row: 1 / span 2;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: var(--node);
+    height: var(--node);
+    border-radius: 50%;
+    background: var(--surface-1);
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+  }
+  .when {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: 0.45rem;
+  }
+  .time {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+  .now {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.1rem 0.55rem;
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--success) 14%, transparent);
+    color: var(--success);
+    font-size: var(--fs-2xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .body {
+    grid-column: 2;
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    margin-bottom: var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background: var(--glass);
+    transition:
+      border-color var(--dur),
+      transform var(--dur) var(--ease-out);
+  }
+  .body:hover {
+    border-color: var(--border-strong);
+  }
+  .body p {
+    color: var(--text-muted);
+    max-width: 60ch;
+  }
+  .body .chips {
+    margin-top: var(--space-2);
+  }
+
+  @media (min-width: 760px) {
+    .tl {
+      --node: 2.5rem;
+    }
+    .track {
+      left: calc(var(--col) + var(--space-5) + var(--node) / 2 - 1px);
+    }
+    .entry {
+      grid-template-columns: var(--col) var(--node) 1fr;
+      column-gap: var(--space-5);
+    }
+    .when {
+      grid-column: 1;
+      grid-row: 1;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+      padding-top: 1.25rem;
+      text-align: right;
+    }
+    .node {
+      grid-column: 2;
+      grid-row: 1;
+      margin-top: 0.85rem;
+    }
+    .body {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+
+  /* Farben je nach Art des Eintrags */
+  .entry[data-typ='rueckschlag'] .node {
+    color: var(--danger);
+    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  }
+  .entry[data-typ='sport'] .node,
+  .entry[data-typ='start'] .node {
+    color: var(--accent-text);
+    border-color: var(--accent-line);
+  }
+  .entry[data-typ='bildung'] .node,
+  .entry[data-typ='zukunft'] .node {
+    color: var(--primary-text);
+    border-color: var(--primary-line);
+  }
+  .entry[data-typ='meilenstein'] .node {
+    background: var(--accent-strong);
+    color: var(--on-accent);
+    border-color: transparent;
+    box-shadow: var(--glow-accent);
+  }
+  .entry[data-typ='meilenstein'] .body {
+    border-color: var(--accent-line);
+    background:
+      radial-gradient(80% 120% at 100% 0%, var(--accent-soft), transparent 70%),
+      var(--glass);
+  }
+  .entry[data-typ='jetzt'] .node {
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 50%, transparent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--success) 12%, transparent);
+  }
+  .entry[data-typ='jetzt'] .body {
+    border-color: color-mix(in srgb, var(--success) 35%, transparent);
+  }
+  .entry[data-typ='ziel'] .node {
+    background: var(--gradient-brand);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: var(--glow-primary);
+  }
+  .entry[data-typ='ziel'] .body {
+    border-style: dashed;
+    border-color: var(--primary-line);
+  }
+</style>

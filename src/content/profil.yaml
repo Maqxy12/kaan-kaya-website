@@ -1,0 +1,38 @@
+# ════════════════════════════════════════════════════════════════════
+#  PROFIL – alles, was in beiden Sprachen gleich ist
+#  Texte (Deutsch/Englisch) findest du in  src/content/texte/de.yaml  und  en.yaml
+# ════════════════════════════════════════════════════════════════════
+
+name: Kaan Kaya
+initialen: KK
+
+# Kontakt
+email: kaya.kaan.cr@gmail.com
+instagram: kaan._tr06          # nur der Benutzername, ohne @
+github: ""                     # z. B. "kaankaya" – leer = wird nicht angezeigt
+linkedin: ""                   # komplette URL – leer = wird nicht angezeigt
+
+# Ort & Zeit (für Live-Uhr, Karte und Google)
+stadt: Zug
+kanton: ZG
+land: CH
+zeitzone: Europe/Zurich
+
+# Wann du erreichbar bist (24-Stunden-Format, gilt 7 Tage die Woche).
+# Daraus berechnet die Website live, ob oben "Erreichbar" oder "Offline" steht.
+erreichbar_von: 8
+erreichbar_bis: 18
+
+# Dein Foto: Lege ein Bild unter  src/assets/profil.jpg  ab (quadratisch, mind. 800×800 px).
+# Solange keins da ist, zeigt die Website automatisch dein Monogramm.
+
+# Google Search Console: Hier den Code aus dem Bestätigungs-Tag eintragen
+# (nur den Teil in content="…"). Leer = kein Tag.
+google_verifizierung: ""
+
+# Besucherstatistik mit GoatCounter (ohne Cookies). Hier deinen GoatCounter-Namen
+# eintragen, z. B. "kaankaya" für kaankaya.goatcounter.com. Leer = ausgeschaltet.
+goatcounter: ""
+
+# Wann du die Seite "Jetzt" zuletzt aktualisiert hast (JJJJ-MM-TT)
+jetzt_aktualisiert: 2026-09-29

@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import BoxTimer from '../components/BoxTimer.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, route, projektPfad } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const b = t(lang).boxtimer;
+const site = Astro.site!;
+---
+<Base
+  lang={lang}
+  titel={b.seo_titel}
+  beschreibung={b.seo_beschreibung}
+  alternates={alternates('boxtimer')}
+  aktiv="projekte"
+  ogBild={`/og/${lang}/boxtimer.png`}
+  schema={[
+    {
+      '@type': 'WebApplication',
+      name: b.seo_titel,
+      description: b.seo_beschreibung,
+      url: new URL(route('boxtimer', lang), site).href,
+      applicationCategory: 'SportsApplication',
+      operatingSystem: 'Any',
+      inLanguage: lang === 'de' ? 'de-CH' : 'en',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'CHF' },
+      author: { '@id': new URL('/#person', site).href },
+    },
+  ]}
+>
+  <PageHero eyebrow={b.eyebrow} titel={b.titel} intro={b.intro} />
+  <div class="container">
+    <BoxTimer lang={lang} />
+    <aside class="card card--pad tips">
+      <h2 class="h3">{b.tipp_titel}</h2>
+      <ul role="list">
+        {b.tipps.map((tip) => <li><Icon name="check" size={16} />{tip}</li>)}
+      </ul>
+      <a class="more" href={projektPfad(lang, lang === 'de' ? 'box-timer' : 'boxing-timer')}>
+        {b.projekt_link}<Icon name="arrow-right" size={16} />
+      </a>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .tips {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+  ul {
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+  li {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  li :global(svg) {
+    flex: none;
+    margin-top: 0.3rem;
+    color: var(--success);
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 650;
+    font-size: var(--fs-sm);
+    color: var(--primary-text);
+  }
+</style>

@@ -1,0 +1,286 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/kontakt/ContactForm.astro';
+import SwissMap from '../components/kontakt/SwissMap.astro';
+import Icon from '../components/Icon.astro';
+import { t, profil, instagramUrl } from '../lib/texte';
+import { type Lang, alternates } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const k = tx.kontakt;
+const site = Astro.site!;
+---
+<Base
+  lang={lang}
+  titel={k.seo_titel}
+  beschreibung={k.seo_beschreibung}
+  alternates={alternates('kontakt')}
+  aktiv="kontakt"
+  ogBild={`/og/${lang}/kontakt.png`}
+  schema={[
+    {
+      '@type': 'ContactPage',
+      name: k.seo_titel,
+      url: new URL(alternates('kontakt')[lang], site).href,
+      mainEntity: { '@id': new URL('/#person', site).href },
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: k.faq.map((q) => ({
+        '@type': 'Question',
+        name: q.frage,
+        acceptedAnswer: { '@type': 'Answer', text: q.antwort },
+      })),
+    },
+  ]}
+>
+  <PageHero eyebrow={k.eyebrow} titel={k.titel} intro={k.intro}>
+    <p class="live" data-status>
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <span data-status-text>{tx.status.erreichbar}</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>{tx.status.ortszeit}</span>
+      <time class="clock" data-clock></time>
+    </p>
+  </PageHero>
+
+  <div class="container layout">
+    <aside class="direct" aria-label={k.direkt}>
+      <p class="eyebrow">{k.direkt}</p>
+
+      <div class="card contact-card">
+        <span class="icon-tile"><Icon name="mail" size={20} /></span>
+        <div class="cc-body">
+          <span class="cc-label">{tx.allgemein.e_mail}</span>
+          <a class="cc-value" href={`mailto:${profil.email}`}>{profil.email}</a>
+        </div>
+        <button class="btn btn--ghost btn--sm copy" type="button" data-copy={profil.email}>
+          <Icon name="copy" size={15} />
+          <span data-copy-label>{tx.allgemein.kopieren}</span>
+        </button>
+      </div>
+
+      {
+        instagramUrl && (
+          <a class="card contact-card link" href={instagramUrl} target="_blank" rel="me noopener">
+            <span class="icon-tile icon-tile--accent">
+              <Icon name="instagram" size={20} />
+            </span>
+            <div class="cc-body">
+              <span class="cc-label">{tx.allgemein.instagram}</span>
+              <span class="cc-value">@{profil.instagram}</span>
+            </div>
+            <Icon name="arrow-up-right" size={18} class="cc-arrow" />
+            <span class="sr-only">({tx.allgemein.oeffnet_neues_fenster})</span>
+          </a>
+        )
+      }
+
+      <div class="card map-card">
+        <div class="map-head">
+          <span class="icon-tile"><Icon name="map-pin" size={20} /></span>
+          <div class="cc-body">
+            <span class="cc-label">{k.ort_label}</span>
+            <span class="cc-value">{k.ort}</span>
+          </div>
+        </div>
+        <SwissMap alt={k.karte_alt} orte={k.karte_orte} />
+      </div>
+    </aside>
+
+    <ContactForm lang={lang} />
+  </div>
+
+  <section class="container section faq" aria-labelledby="faq-titel">
+    <h2 id="faq-titel" class="h2">{k.faq_titel}</h2>
+    <div class="faq-list">
+      {
+        k.faq.map((q, i) => (
+          <details class="card faq-item" name="faq" open={i === 0}>
+            <summary>
+              {q.frage}
+              <Icon name="chevron-down" size={20} class="chev" />
+            </summary>
+            <p>{q.antwort}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .live {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .live .pulse-dot {
+    color: var(--text-subtle);
+  }
+  .live .pulse-dot::after {
+    display: none;
+  }
+  .live[data-available='true'] .pulse-dot {
+    color: var(--success);
+  }
+  .live[data-available='true'] .pulse-dot::after {
+    display: block;
+  }
+  .live [data-status-text] {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .clock {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .clock:empty {
+    display: none;
+  }
+  .sep {
+    color: var(--text-subtle);
+  }
+  .layout {
+    display: grid;
+    gap: var(--space-6);
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      gap: var(--space-7);
+    }
+  }
+  .direct {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg);
+    min-width: 0;
+  }
+  .contact-card.link {
+    transition:
+      border-color var(--dur),
+      transform var(--dur) var(--ease-out);
+  }
+  .contact-card.link:hover {
+    border-color: var(--accent-line);
+    transform: translateY(-2px);
+  }
+  .cc-body {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+  }
+  .cc-label {
+    font-size: var(--fs-xs);
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .cc-value {
+    font-weight: 650;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  a.cc-value:hover {
+    color: var(--primary-text);
+  }
+  .copy {
+    flex: none;
+  }
+  .copy[data-copied] {
+    color: var(--success);
+  }
+  .contact-card :global(.cc-arrow) {
+    color: var(--text-subtle);
+    flex: none;
+  }
+  .map-card {
+    padding: var(--space-4) var(--space-5) var(--space-5);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: var(--space-4);
+  }
+  .map-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .faq {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 52rem;
+  }
+  .faq-list {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .faq-item {
+    border-radius: var(--radius-lg);
+    padding: 0;
+    overflow: hidden;
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    font-weight: 650;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary :global(.chev) {
+    flex: none;
+    color: var(--text-subtle);
+    transition: transform var(--dur) var(--ease-out);
+  }
+  details[open] summary :global(.chev) {
+    transform: rotate(180deg);
+  }
+  details p {
+    padding: 0 var(--space-5) var(--space-5);
+    color: var(--text-muted);
+  }
+  @supports (interpolate-size: allow-keywords) {
+    .faq-item {
+      interpolate-size: allow-keywords;
+    }
+    .faq-item::details-content {
+      height: 0;
+      overflow: clip;
+      transition:
+        height var(--dur) var(--ease-out),
+        content-visibility var(--dur) allow-discrete;
+    }
+    .faq-item[open]::details-content {
+      height: auto;
+    }
+  }
+</style>

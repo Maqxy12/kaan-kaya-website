@@ -1,0 +1,80 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { t, profil } from '../lib/texte';
+import { type Lang, alternates, formatDatum } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const j = tx.jetzt;
+---
+<Base
+  lang={lang}
+  titel={j.seo_titel}
+  beschreibung={j.seo_beschreibung}
+  alternates={alternates('jetzt')}
+  aktiv="jetzt"
+  ogBild={`/og/${lang}/jetzt.png`}
+>
+  <PageHero eyebrow={j.eyebrow} titel={j.titel}>
+    <p class="lead">
+      {j.intro} <a href="https://nownownow.com/about" target="_blank" rel="noopener">{j.intro_link_text}</a>.
+    </p>
+    <p class="updated">
+      <Icon name="clock" size={15} />
+      {tx.allgemein.aktualisiert}: <time datetime={profil.jetzt_aktualisiert}>{formatDatum(profil.jetzt_aktualisiert, lang)}</time>
+    </p>
+  </PageHero>
+
+  <section class="container" aria-label={j.titel}>
+    <ul class="now" role="list">
+      {
+        j.liste.map((item, i) => (
+          <li class="card item reveal">
+            <span class:list={['icon-tile', { 'icon-tile--accent': i % 2 === 1 }]}>
+              <Icon name={item.icon} size={22} />
+            </span>
+            <div>
+              <h2 class="h3">{item.titel}</h2>
+              <p class="muted">{item.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .lead a {
+    color: var(--primary-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .now {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 52rem;
+  }
+  .item {
+    display: flex;
+    gap: var(--space-5);
+    align-items: flex-start;
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-lg);
+  }
+  .item .h3 {
+    margin-bottom: var(--space-1);
+  }
+</style>

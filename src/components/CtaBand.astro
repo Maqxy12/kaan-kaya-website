@@ -1,0 +1,85 @@
+---
+import Icon from './Icon.astro';
+import { profil } from '../lib/texte';
+
+interface Props {
+  titel: string;
+  text: string;
+  knopf: string;
+  href: string;
+  kopierenLabel?: string;
+}
+const { titel, text, knopf, href, kopierenLabel } = Astro.props;
+---
+<section class="container section" aria-labelledby="cta-titel">
+  <div class="cta card reveal">
+    <div class="glow" aria-hidden="true"></div>
+    <h2 id="cta-titel" class="h2">{titel}</h2>
+    <p class="lead">{text}</p>
+    <div class="actions">
+      <a class="btn btn--accent" href={href}>
+        {knopf}
+        <Icon name="arrow-right" size={18} class="arrow" />
+      </a>
+      {
+        kopierenLabel && (
+          <button class="btn btn--secondary" type="button" data-copy={profil.email}>
+            <Icon name="copy" size={16} />
+            <span data-copy-label>{profil.email}</span>
+          </button>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-4);
+    padding: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(1.25rem, 1rem + 2vw, 3rem);
+    border-radius: var(--radius-xl);
+    border-color: var(--accent-line);
+  }
+  .glow {
+    position: absolute;
+    inset: auto -20% -60% -20%;
+    height: 120%;
+    z-index: -1;
+    background:
+      radial-gradient(40% 50% at 30% 50%, rgb(59 130 246 / 0.22), transparent 70%),
+      radial-gradient(40% 50% at 70% 50%, rgb(249 115 22 / 0.2), transparent 70%);
+    filter: blur(20px);
+  }
+  .h2 {
+    max-width: 20ch;
+    font-weight: 800;
+  }
+  .lead {
+    max-width: 46ch;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  .actions :global([data-copied]) {
+    border-color: var(--success);
+    color: var(--success);
+  }
+  @media (max-width: 479px) {
+    .actions {
+      display: grid;
+      width: 100%;
+    }
+    .actions .btn {
+      white-space: normal;
+    }
+  }
+</style>

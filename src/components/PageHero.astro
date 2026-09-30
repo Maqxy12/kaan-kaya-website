@@ -1,0 +1,31 @@
+---
+/** Kopfbereich für Unterseiten. */
+interface Props {
+  eyebrow: string;
+  titel: string;
+  intro?: string;
+}
+const { eyebrow, titel, intro } = Astro.props;
+---
+<header class="page-hero container hero-in">
+  <p class="eyebrow">{eyebrow}</p>
+  <h1 class="h1">{titel}</h1>
+  {intro && <p class="lead">{intro}</p>}
+  <slot />
+</header>
+
+<style>
+  .page-hero {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    padding-top: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    padding-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .h1 {
+    max-width: 22ch;
+  }
+  .lead {
+    max-width: 44rem;
+  }
+</style>

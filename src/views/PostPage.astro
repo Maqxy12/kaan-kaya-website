@@ -1,0 +1,171 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Avatar from '../components/Avatar.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { t, profil } from '../lib/texte';
+import { type Lang, route, blogPfad, andereSprache, formatDatum, htmlLang } from '../lib/i18n';
+import { gegenstueck, slug, lesezeit, type Beitrag } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+  post: Beitrag;
+}
+const { lang, post } = Astro.props;
+const tx = t(lang);
+const p = post.data;
+const { Content } = await render(post);
+const other = andereSprache(lang);
+const partner = await gegenstueck('blog', p.schluessel, other);
+const hier = blogPfad(lang, slug(post.id));
+const partnerPfad = partner ? blogPfad(other, slug(partner.id)) : null;
+const alternates = { [lang]: hier, [other]: partnerPfad ?? route('blog', other) } as Record<Lang, string>;
+const site = Astro.site!;
+const og = `/og/${lang}/blog/${slug(post.id)}.png`;
+---
+<Base
+  lang={lang}
+  titel={p.titel}
+  beschreibung={p.beschreibung}
+  alternates={alternates}
+  aktiv="blog"
+  ogTyp="article"
+  ogBild={og}
+  veroeffentlicht={p.datum}
+  schema={[
+    {
+      '@type': 'BlogPosting',
+      headline: p.titel,
+      description: p.beschreibung,
+      datePublished: p.datum.toISOString(),
+      dateModified: p.datum.toISOString(),
+      inLanguage: htmlLang[lang],
+      url: new URL(hier, site).href,
+      mainEntityOfPage: new URL(hier, site).href,
+      image: new URL(og, site).href,
+      keywords: p.tags.join(', '),
+      author: { '@id': new URL('/#person', site).href },
+      publisher: { '@id': new URL('/#person', site).href },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: tx.nav.start, item: new URL(route('start', lang), site).href },
+        { '@type': 'ListItem', position: 2, name: tx.nav.blog, item: new URL(route('blog', lang), site).href },
+        { '@type': 'ListItem', position: 3, name: p.titel, item: new URL(hier, site).href },
+      ],
+    },
+  ]}
+>
+  <Breadcrumbs label="Breadcrumb" items={[{ label: tx.nav.blog, href: route('blog', lang) }, { label: p.titel }]} />
+
+  <article class="container post">
+    <header class="head hero-in">
+      <div class="meta">
+        <time datetime={p.datum.toISOString()}>{formatDatum(p.datum, lang)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{lesezeit(post.body)} {tx.allgemein.lesezeit}</span>
+      </div>
+      <h1 class="h1">{p.titel}</h1>
+      <p class="lead">{p.beschreibung}</p>
+      <div class="byline">
+        <span class="mini-avatar"><Avatar alt="" size={96} /></span>
+        <div>
+          <strong>{profil.name}</strong>
+          <span>{tx.meta.rolle}</span>
+        </div>
+        {
+          partnerPfad && (
+            <a class="chip chip--primary alt" href={partnerPfad} hreflang={other === 'de' ? 'de-CH' : 'en'} lang={other === 'de' ? 'de-CH' : 'en'}>
+              <Icon name="languages" size={14} />
+              {tx.blog.auch_auf}
+            </a>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="prose body">
+      <Content />
+    </div>
+
+    <footer class="post-foot">
+      <ul class="chips" role="list">
+        {p.tags.map((tag) => <li class="chip">#{tag}</li>)}
+      </ul>
+      <a class="btn btn--secondary btn--sm" href={route('blog', lang)}>
+        <Icon name="arrow-left" size={16} />
+        {tx.blog.alle_beitraege}
+      </a>
+    </footer>
+  </article>
+
+  <CtaBand titel={tx.start.cta.titel} text={tx.start.cta.text} knopf={tx.start.cta.knopf} href={route('kontakt', lang)} />
+</Base>
+
+<style>
+  .post {
+    max-width: calc(46rem + 2 * var(--gutter));
+  }
+  .head {
+    display: grid;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+    margin-bottom: var(--space-7);
+    border-bottom: 1px solid var(--border);
+  }
+  .meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .h1 {
+    font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+  }
+  .byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .mini-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    flex: none;
+  }
+  .byline div {
+    display: grid;
+    line-height: 1.3;
+  }
+  .byline strong {
+    font-size: 0.9375rem;
+  }
+  .byline div span {
+    font-size: var(--fs-sm);
+    color: var(--text-subtle);
+  }
+  .alt {
+    margin-left: auto;
+  }
+  .body {
+    max-width: none;
+  }
+  .post-foot {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border);
+  }
+</style>

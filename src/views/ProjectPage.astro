@@ -1,0 +1,325 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ProjectVisual from '../components/projekte/ProjectVisual.astro';
+import ReactionGame from '../components/ReactionGame.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { t } from '../lib/texte';
+import { type Lang, route, projektPfad, andereSprache } from '../lib/i18n';
+import { projekte, gegenstueck, slug, type Projekt } from '../lib/inhalte';
+
+interface Props {
+  lang: Lang;
+  projekt: Projekt;
+}
+const { lang, projekt } = Astro.props;
+const tx = t(lang);
+const p = projekt.data;
+const { Content } = await render(projekt);
+const alle = await projekte(lang);
+const index = alle.findIndex((x) => x.id === projekt.id);
+const naechstes = alle[(index + 1) % alle.length];
+const other = andereSprache(lang);
+const partner = await gegenstueck('projekte', p.schluessel, other);
+const hier = projektPfad(lang, slug(projekt.id));
+const alternates = {
+  [lang]: hier,
+  [other]: partner ? projektPfad(other, slug(partner.id)) : route('projekte', other),
+} as Record<Lang, string>;
+const site = Astro.site!;
+
+const meta = [
+  { label: tx.projekte.rolle, wert: p.rolle, icon: 'user' },
+  { label: tx.projekte.stack, wert: p.stack.join(' · '), icon: 'layers' },
+  ...(p.jahr ? [{ label: tx.projekte.jahr, wert: p.jahr, icon: 'calendar' }] : []),
+  ...(p.status ? [{ label: tx.projekte.status, wert: p.status, icon: 'circle-check' }] : []),
+];
+---
+<Base
+  lang={lang}
+  titel={p.titel}
+  beschreibung={p.kurz}
+  alternates={alternates}
+  aktiv="projekte"
+  ogBild={`/og/${lang}/projekte/${slug(projekt.id)}.png`}
+  ogTyp="article"
+  schema={[
+    {
+      '@type': 'CreativeWork',
+      name: p.titel,
+      description: p.kurz,
+      url: new URL(hier, site).href,
+      inLanguage: lang === 'de' ? 'de-CH' : 'en',
+      author: { '@id': new URL('/#person', site).href },
+      keywords: p.stack.join(', '),
+      ...(p.jahr ? { dateCreated: p.jahr } : {}),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: tx.nav.start, item: new URL(route('start', lang), site).href },
+        { '@type': 'ListItem', position: 2, name: tx.nav.projekte, item: new URL(route('projekte', lang), site).href },
+        { '@type': 'ListItem', position: 3, name: p.titel, item: new URL(hier, site).href },
+      ],
+    },
+  ]}
+>
+  <Breadcrumbs
+    label="Breadcrumb"
+    items={[
+      { label: tx.nav.projekte, href: route('projekte', lang) },
+      { label: p.titel },
+    ]}
+  />
+
+  <article>
+    <header class="container head hero-in">
+      {
+        p.highlight && (
+          <p class="chip chip--accent">
+            <Icon name="sparkles" size={13} />
+            {p.highlight}
+          </p>
+        )
+      }
+      <h1 class="h1">{p.titel}</h1>
+      <p class="lead">{p.kurz}</p>
+      {
+        (p.live || p.code || p.spiel || p.app) && (
+          <div class="links">
+            {p.app && (
+              <a class="btn btn--primary" href={route(p.app, lang)}>
+                <Icon name="timer" size={18} />
+                {tx.projekte.app_oeffnen}
+              </a>
+            )}
+            {p.spiel && (
+              <a class="btn btn--primary" href="#reaktion">
+                <Icon name="gamepad-2" size={18} />
+                {tx.projekte.selbst_testen}
+              </a>
+            )}
+            {p.live && (
+              <a class="btn btn--secondary" href={p.live} target="_blank" rel="noopener">
+                <Icon name="external-link" size={17} />
+                {tx.projekte.live}
+                <span class="sr-only">({tx.allgemein.oeffnet_neues_fenster})</span>
+              </a>
+            )}
+            {p.code && (
+              <a class="btn btn--secondary" href={p.code} target="_blank" rel="noopener">
+                <Icon name="github" size={17} />
+                {tx.projekte.code}
+                <span class="sr-only">({tx.allgemein.oeffnet_neues_fenster})</span>
+              </a>
+            )}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="container">
+      <div class="card visual">
+        <ProjectVisual visual={p.visual} />
+      </div>
+    </div>
+
+    <div class="container layout">
+      <aside class="meta" aria-label={tx.projekte.rolle}>
+        <dl class="card card--pad meta-card">
+          {
+            meta.map((m) => (
+              <div class="meta-row">
+                <dt>
+                  <Icon name={m.icon} size={15} />
+                  {m.label}
+                </dt>
+                <dd>{m.wert}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {
+          p.kennzahlen.length > 0 && (
+            <ul class="kpis" role="list">
+              {p.kennzahlen.map((k) => (
+                <li class="card kpi">
+                  <span class="kpi-value">{k.wert}</span>
+                  <span class="kpi-label">{k.label}</span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </aside>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+
+  {p.spiel && <ReactionGame lang={lang} />}
+
+  {
+    naechstes && naechstes.id !== projekt.id && (
+      <nav class="container section" aria-label={tx.projekte.naechstes}>
+        <a class="card next" href={projektPfad(lang, slug(naechstes.id))}>
+          <span class="next-label">{tx.projekte.naechstes}</span>
+          <span class="next-title">{naechstes.data.titel}</span>
+          <span class="next-arrow" aria-hidden="true">
+            <Icon name="arrow-right" size={22} />
+          </span>
+        </a>
+      </nav>
+    )
+  }
+
+  <CtaBand titel={tx.projekte.cta_titel} text={tx.projekte.cta_text} knopf={tx.projekte.cta_knopf} href={route('kontakt', lang)} />
+</Base>
+
+<style>
+  .head {
+    display: grid;
+    gap: var(--space-4);
+    justify-items: start;
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-7);
+  }
+  .h1 {
+    max-width: 20ch;
+  }
+  .lead {
+    max-width: 44rem;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .visual {
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+  }
+  .visual :global(.pv) {
+    aspect-ratio: 16 / 8;
+  }
+  @media (max-width: 640px) {
+    .visual :global(.pv) {
+      aspect-ratio: 16 / 11;
+    }
+  }
+  .layout {
+    display: grid;
+    gap: var(--space-7);
+    padding-top: var(--space-8);
+  }
+  @media (min-width: 960px) {
+    .layout {
+      grid-template-columns: 19rem minmax(0, 1fr);
+      gap: var(--space-9);
+      align-items: start;
+    }
+    .meta {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+  .meta {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .meta-card {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .meta-row dt {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--fs-xs);
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+  .meta-row dd {
+    margin-top: 0.25rem;
+    font-weight: 550;
+  }
+  .kpis {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .kpi {
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius);
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .kpi-label {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .next {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-6) var(--space-7);
+    border-radius: var(--radius-xl);
+    transition:
+      border-color var(--dur),
+      transform var(--dur) var(--ease-out);
+  }
+  .next:hover {
+    border-color: var(--primary-line);
+    transform: translateY(-3px);
+  }
+  .next-label {
+    font-size: var(--fs-xs);
+    font-weight: 650;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary-text);
+  }
+  .next-title {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    padding-right: 3rem;
+  }
+  .next-arrow {
+    position: absolute;
+    right: var(--space-6);
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--primary-strong);
+    color: #fff;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .next:hover .next-arrow {
+    transform: translateX(4px);
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { t } from '../lib/texte';
+import { type Lang, alternates, formatDatum } from '../lib/i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const tx = t(lang);
+const seite = await getEntry('seiten', lang === 'de' ? 'de/datenschutz' : 'en/privacy');
+if (!seite) throw new Error('Datenschutz-Seite fehlt');
+const { Content } = await render(seite);
+---
+<Base
+  lang={lang}
+  titel={tx.datenschutz.seo_titel}
+  beschreibung={tx.datenschutz.seo_beschreibung}
+  alternates={alternates('datenschutz')}
+  aktiv="datenschutz"
+>
+  <article class="container legal">
+    <header class="hero-in">
+      <h1 class="h1">{seite.data.titel}</h1>
+      <p class="subtle">{tx.allgemein.aktualisiert}: <time datetime={seite.data.stand.toISOString()}>{formatDatum(seite.data.stand, lang)}</time></p>
+    </header>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    max-width: calc(46rem + 2 * var(--gutter));
+    padding-top: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+  }
+  header {
+    display: grid;
+    gap: var(--space-3);
+    margin-bottom: var(--space-7);
+  }
+</style>
