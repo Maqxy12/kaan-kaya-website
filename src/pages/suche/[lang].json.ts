@@ -22,7 +22,7 @@ export const GET: APIRoute = async ({ params }) => {
     { key: 'skills', titel: tx.nav.skills, text: tx.skills.seo_beschreibung, icon: 'layers' },
     { key: 'blog', titel: tx.nav.blog, text: tx.blog.seo_beschreibung, icon: 'pen-line' },
     { key: 'jetzt', titel: tx.nav.jetzt, text: tx.jetzt.seo_beschreibung, icon: 'sparkles' },
-    { key: 'boxtimer', titel: tx.boxtimer.seo_titel, text: tx.boxtimer.seo_beschreibung, icon: 'timer' },
+    { key: 'boxtimer', titel: tx.boxtimer.name, text: tx.boxtimer.seo_beschreibung, icon: 'timer' },
     { key: 'lebenslauf', titel: tx.nav.lebenslauf, text: tx.lebenslauf.seo_beschreibung, icon: 'file-text' },
     { key: 'kontakt', titel: tx.nav.kontakt, text: tx.kontakt.seo_beschreibung, icon: 'at-sign' },
     { key: 'datenschutz', titel: tx.nav.datenschutz, text: tx.datenschutz.seo_beschreibung, icon: 'shield-check' },

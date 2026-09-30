@@ -315,10 +315,13 @@ projekte:
 
 # ─────────────────────────────── BOX-TIMER ───────────────────────────────
 boxtimer:
-  seo_titel: Box-Timer
-  seo_beschreibung: Kostenloser Rundentimer fürs Boxtraining – mit Gong, 10-Sekunden-Warnung und Bildschirm, der anbleibt. Von Kaan Kaya.
-  eyebrow: Werkzeug · Box-Timer
-  titel: Rundentimer fürs Boxtraining.
+  name: Box-Timer
+  seo_titel: Box-Timer online – Rundentimer fürs Boxtraining
+  seo_beschreibung: >-
+    Kostenloser Box-Timer online: Rundentimer fürs Boxtraining mit Gong, 10-Sekunden-Warnung
+    und Pausen. Ohne Werbung, ohne Anmeldung – funktioniert auf dem Handy.
+  eyebrow: Werkzeug · Kostenlos
+  titel: Box-Timer für dein Boxtraining.
   intro: >-
     Den nutze ich selbst im Training: Runden und Pausen einstellen, Start drücken, Handy
     hinlegen. Ein Gong startet und beendet jede Runde, 10 Sekunden vor Schluss kommt ein Warnsignal.

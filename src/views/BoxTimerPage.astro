@@ -16,6 +16,7 @@ const site = Astro.site!;
 <Base
   lang={lang}
   titel={b.seo_titel}
+  titelRoh
   beschreibung={b.seo_beschreibung}
   alternates={alternates('boxtimer')}
   aktiv="projekte"
@@ -23,7 +24,7 @@ const site = Astro.site!;
   schema={[
     {
       '@type': 'WebApplication',
-      name: b.seo_titel,
+      name: b.name,
       description: b.seo_beschreibung,
       url: new URL(route('boxtimer', lang), site).href,
       applicationCategory: 'SportsApplication',

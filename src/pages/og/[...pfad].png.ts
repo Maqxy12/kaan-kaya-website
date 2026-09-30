@@ -20,7 +20,7 @@ export const getStaticPaths = (async () => {
       ['kontakt', tx.kontakt.eyebrow, tx.kontakt.titel, tx.kontakt.seo_beschreibung],
       ['jetzt', tx.jetzt.eyebrow, tx.jetzt.titel, tx.jetzt.seo_beschreibung],
       ['lebenslauf', tx.lebenslauf.titel, tx.meta.rolle, tx.lebenslauf.seo_beschreibung],
-      ['boxtimer', tx.boxtimer.eyebrow, tx.boxtimer.titel, tx.boxtimer.seo_beschreibung],
+      ['boxtimer', tx.boxtimer.name, tx.boxtimer.titel, tx.boxtimer.seo_beschreibung],
     ];
     for (const [key, eyebrow, titel, text] of seiten) {
       paths.push({ params: { pfad: `${lang}/${key}` }, props: { eyebrow, titel, text, fuss } });

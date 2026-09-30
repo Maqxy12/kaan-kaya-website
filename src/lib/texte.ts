@@ -95,7 +95,7 @@ const texteSchema = z.object({
   }),
   boxtimer: z.object({
     ...strings(
-      'seo_titel', 'seo_beschreibung', 'eyebrow', 'titel', 'intro', 'einstellungen', 'runden',
+      'name', 'seo_titel', 'seo_beschreibung', 'eyebrow', 'titel', 'intro', 'einstellungen', 'runden',
       'rundenzeit', 'pause', 'vorbereitung', 'gesamt', 'start', 'pausieren', 'weiter', 'zuruecksetzen',
       'vollbild', 'ton_an', 'ton_aus', 'runde', 'von', 'phase_bereit', 'phase_vorbereitung',
       'phase_runde', 'phase_pause', 'phase_fertig', 'fertig_text', 'letzte_sekunden', 'weniger',

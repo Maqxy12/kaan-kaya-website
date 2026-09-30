@@ -308,10 +308,13 @@ projekte:
 
 # ─────────────────────────────── BOXING TIMER ───────────────────────────────
 boxtimer:
-  seo_titel: Boxing timer
-  seo_beschreibung: Free round timer for boxing training – with bell, 10-second warning and a screen that stays on. By Kaan Kaya.
-  eyebrow: Tool · Boxing timer
-  titel: Round timer for boxing training.
+  name: Boxing timer
+  seo_titel: Boxing Timer Online – Free Round Timer
+  seo_beschreibung: >-
+    Free online boxing timer: round timer with bell, 10-second warning and rest periods.
+    No ads, no sign-up – works on your phone.
+  eyebrow: Tool · Free
+  titel: Boxing timer for your training.
   intro: >-
     I use this one in my own training: set rounds and rest, press start, put the phone down.
     A bell starts and ends every round, and a warning sounds 10 seconds before the end.

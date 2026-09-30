@@ -28,7 +28,7 @@ erreichbar_bis: 18
 
 # Google Search Console: Hier den Code aus dem Bestätigungs-Tag eintragen
 # (nur den Teil in content="…"). Leer = kein Tag.
-google_verifizierung: ""
+google_verifizierung: "of0f9LB5Bvqg1WKop9eo1qeuV4CzQXxQzLsAwIHmDT4"
 
 # Besucherstatistik mit GoatCounter (ohne Cookies). Hier deinen GoatCounter-Namen
 # eintragen, z. B. "kaankaya" für kaankaya.goatcounter.com. Leer = ausgeschaltet.
