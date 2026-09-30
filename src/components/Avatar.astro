@@ -4,8 +4,8 @@
  * wird es automatisch optimiert (AVIF/WebP) angezeigt – sonst das Monogramm.
  */
 import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import { profil } from '../lib/texte';
+import { foto } from '../lib/foto';
 
 interface Props {
   alt: string;
@@ -14,8 +14,6 @@ interface Props {
   eager?: boolean;
 }
 const { alt, size = 320, class: className, eager = false } = Astro.props;
-const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/profil.{jpg,jpeg,png,webp,avif}', { eager: true });
-const foto = Object.values(fotos)[0]?.default;
 ---
 {
   foto ? (

@@ -48,7 +48,7 @@ npm run dev
 ## 3. Häufige Aufgaben
 
 ### Foto einfügen
-Leg ein quadratisches Foto (mind. 800 × 800 px) als `src/assets/profil.jpg` ab. Fertig: Die Website ersetzt das Monogramm automatisch und optimiert das Bild (AVIF/WebP).
+Leg ein quadratisches Foto (mind. 800 × 800 px) als `src/assets/profil.jpg` ab. Fertig: Die Website ersetzt das Monogramm automatisch und optimiert das Bild (AVIF/WebP). Das Foto erscheint dann auf der Startseite, im Blog, im Lebenslauf (Seite **und** PDF), auf den Vorschaubildern für WhatsApp & Co. und in den Daten für Google. Willst du ein neues Foto, ersetzt du einfach diese eine Datei.
 
 ### Neues Projekt hinzufügen
 1. Kopiere `src/content/projekte/de/roboter.md` und gib der Kopie einen neuen Namen, z. B. `wetter-app.md`. Der Dateiname wird zur Adresse: `/projekte/wetter-app/`.

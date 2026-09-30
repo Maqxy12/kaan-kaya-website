@@ -5,6 +5,7 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fotoDatei } from './foto';
 
 const fontDir = join(process.cwd(), 'node_modules/@fontsource');
 const font = (pkg: string, file: string) => readFileSync(join(fontDir, pkg, 'files', file));
@@ -17,6 +18,20 @@ const fonts = [
 const logo = `data:image/svg+xml;base64,${Buffer.from(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64"><defs><linearGradient id="g" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#60a5fa"/><stop offset=".55" stop-color="#3b82f6"/><stop offset="1" stop-color="#f97316"/></linearGradient></defs><path d="M16 2.6 27.6 9.3v13.4L16 29.4 4.4 22.7V9.3z" fill="none" stroke="url(#g)" stroke-width="2.2" stroke-linejoin="round"/><path d="M12.4 10v12M20 10l-6.2 6 6.6 6" fill="none" stroke="#f1f5f9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21.2" cy="16" r="1.9" fill="#f97316"/></svg>`,
 ).toString('base64')}`;
+
+const foto = fotoDatei
+  ? `data:image/${fotoDatei.endsWith('.png') ? 'png' : 'jpeg'};base64,${readFileSync(fotoDatei).toString('base64')}`
+  : null;
+// Mit Foto: rundes Profilbild statt Logo (etwas herangezoomt, damit das Gesicht gross genug ist)
+const kopfBild: Node = foto
+  ? {
+      type: 'div',
+      props: {
+        style: { display: 'flex', width: 76, height: 76, borderRadius: 76, overflow: 'hidden', border: '2px solid rgba(96,165,250,0.6)' },
+        children: { type: 'img', props: { src: foto, width: 104, height: 104, style: { marginLeft: -16, marginTop: -8 } } },
+      },
+    }
+  : { type: 'img', props: { src: logo, width: 64, height: 64 } };
 
 type Node = { type: string; props: Record<string, unknown> };
 const h = (type: string, style: Record<string, unknown>, ...children: (Node | string)[]): Node => ({
@@ -52,7 +67,7 @@ export async function ogBild({ eyebrow, titel, text, fuss, domain }: OgDaten): P
     h(
       'div',
       { display: 'flex', alignItems: 'center', gap: 18 },
-      { type: 'img', props: { src: logo, width: 64, height: 64 } },
+      kopfBild,
       h(
         'div',
         { display: 'flex', flexDirection: 'column' },

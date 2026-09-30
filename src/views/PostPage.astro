@@ -141,6 +141,12 @@ const og = `/og/${lang}/blog/${slug(post.id)}.png`;
     border: 1px solid var(--border-strong);
     flex: none;
   }
+  /* Foto etwas heranzoomen, damit das Gesicht im kleinen Kreis gut erkennbar ist */
+  .mini-avatar :global(img) {
+    display: block;
+    transform: scale(1.4);
+    transform-origin: 50% 36%;
+  }
   .byline div {
     display: grid;
     line-height: 1.3;

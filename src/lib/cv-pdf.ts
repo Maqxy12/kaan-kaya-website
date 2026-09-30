@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { t, profil, instagramUrl } from './texte';
 import { type Lang, formatDatum } from './i18n';
 import { projekte } from './inhalte';
+import { fotoDatei } from './foto';
 
 const fontDir = join(process.cwd(), 'node_modules/@fontsource');
 const F = {
@@ -56,26 +57,40 @@ export async function lebenslaufPdf(lang: Lang, site: URL): Promise<Buffer> {
   const W = doc.page.width - L - doc.page.margins.right;
 
   // ── Kopf ──
-  doc.font('D').fontSize(28).fillColor(C.text).text(profil.name, L, 46, { characterSpacing: -0.6 });
-  doc.font('S').fontSize(12).fillColor(C.primary).text(tx.meta.rolle);
+  const FOTO = 76; // Grösse des Fotos oben rechts (in Punkt)
+  const kopfBreite = fotoDatei ? W - FOTO - 16 : W;
+  doc.font('D').fontSize(28).fillColor(C.text).text(profil.name, L, 46, { characterSpacing: -0.6, width: kopfBreite });
+  doc.font('S').fontSize(12).fillColor(C.primary).text(tx.meta.rolle, { width: kopfBreite });
   doc.moveDown(0.35);
   const kontakt = [tx.kontakt.ort, profil.email, site.host, instagramUrl ? `Instagram @${profil.instagram}` : '']
     .filter(Boolean)
     .join('   ·   ');
-  doc.font('R').fontSize(9).fillColor(C.muted).text(kontakt);
+  doc.font('R').fontSize(9).fillColor(C.muted).text(kontakt, { width: kopfBreite });
+  let kopfEnde = doc.y;
 
-  // Logo (Hexagon mit K)
-  const lx = L + W - 40;
-  const ly = 46;
-  const grad = doc.linearGradient(lx, ly, lx + 40, ly + 40);
-  grad.stop(0, '#60a5fa').stop(0.55, '#3b82f6').stop(1, '#f97316');
-  doc.save().translate(lx, ly).scale(1.25);
-  doc.path('M16 2.6 27.6 9.3v13.4L16 29.4 4.4 22.7V9.3z').lineWidth(2.2).lineJoin('round').stroke(grad);
-  doc.path('M12.4 10v12M20 10l-6.2 6 6.6 6').lineWidth(2.4).lineCap('round').lineJoin('round').stroke(C.text);
-  doc.circle(21.2, 16, 1.9).fill('#f97316');
-  doc.restore();
+  if (fotoDatei) {
+    // Bewerbungsfoto oben rechts (in der Schweiz üblich)
+    const fx = L + W - FOTO;
+    const fy = 40;
+    doc.save().roundedRect(fx, fy, FOTO, FOTO, 6).clip();
+    doc.image(fotoDatei, fx, fy, { cover: [FOTO, FOTO], align: 'center', valign: 'center' });
+    doc.restore();
+    doc.roundedRect(fx, fy, FOTO, FOTO, 6).lineWidth(0.6).stroke(C.line);
+    kopfEnde = Math.max(kopfEnde, fy + FOTO - 8);
+  } else {
+    // Logo (Hexagon mit K)
+    const lx = L + W - 40;
+    const ly = 46;
+    const grad = doc.linearGradient(lx, ly, lx + 40, ly + 40);
+    grad.stop(0, '#60a5fa').stop(0.55, '#3b82f6').stop(1, '#f97316');
+    doc.save().translate(lx, ly).scale(1.25);
+    doc.path('M16 2.6 27.6 9.3v13.4L16 29.4 4.4 22.7V9.3z').lineWidth(2.2).lineJoin('round').stroke(grad);
+    doc.path('M12.4 10v12M20 10l-6.2 6 6.6 6').lineWidth(2.4).lineCap('round').lineJoin('round').stroke(C.text);
+    doc.circle(21.2, 16, 1.9).fill('#f97316');
+    doc.restore();
+  }
 
-  let y = doc.y + 12;
+  let y = kopfEnde + 12;
   doc.moveTo(L, y).lineTo(L + W, y).lineWidth(1.5).stroke(C.text);
   y += 16;
 

@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Logo from '../components/Logo.astro';
+import Avatar from '../components/Avatar.astro';
+import { foto } from '../lib/foto';
 import { t, profil, instagramUrl } from '../lib/texte';
 import { type Lang, alternates, cvPdfPfad, formatDatum } from '../lib/i18n';
 import { projekte } from '../lib/inhalte';
@@ -51,7 +53,7 @@ const heute = formatDatum(new Date(), lang);
           <p class="cv-name">{profil.name}</p>
           <p class="cv-role">{tx.meta.rolle}</p>
         </div>
-        <Logo size={44} class="cv-logo" />
+        {foto ? <span class="cv-foto"><Avatar alt={tx.start.karte.foto_alt} size={112} /></span> : <Logo size={44} class="cv-logo" />}
         <ul class="cv-contact" role="list">
           <li><Icon name="map-pin" size={14} />{tx.kontakt.ort}</li>
           <li><Icon name="mail" size={14} /><a href={`mailto:${profil.email}`}>{profil.email}</a></li>
@@ -192,6 +194,16 @@ const heute = formatDatum(new Date(), lang);
   }
   .cv-head :global(.cv-logo) {
     color: var(--text);
+  }
+  .cv-foto {
+    grid-row: span 2;
+    width: 6.5rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .cv-foto :global(img) {
+    display: block;
   }
   .cv-contact {
     grid-column: 1 / -1;

@@ -218,8 +218,13 @@ const s = tx.start;
     overflow: hidden;
     border: 1px solid var(--border);
   }
-  .tape-photo :global(.avatar) {
+  /* Monogramm im Querformat, echtes Foto quadratisch (sonst verdeckt der Name das Gesicht) */
+  .tape-photo :global(svg.avatar) {
     aspect-ratio: 5 / 4;
+  }
+  .tape-photo :global(img.avatar) {
+    display: block;
+    background: #f4f4f5;
   }
   .tape-name {
     position: absolute;
