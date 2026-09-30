@@ -79,20 +79,29 @@ Normaler Text. **fett** und [Link](https://beispiel.ch)
 
 ---
 
-## 4. Veröffentlichen (Netlify, kostenlos)
+## 4. Veröffentlichen
 
-Du kennst Netlify schon von deinem Reaktionsspiel. Empfohlen ist der Weg über GitHub, weil dann jede Änderung automatisch online geht:
+Deine Website läuft unter **https://kaankaya.netlify.app** (Netlify-Projekt „kaankaya“).
 
-1. Erstelle ein kostenloses Konto auf **github.com** (das brauchst du als Software Engineer sowieso) und lade diesen Ordner als neues Repository hoch, z. B. mit **GitHub Desktop**.
-2. In Netlify: **Add new site → Import an existing project → GitHub** → dein Repository wählen. Die Einstellungen stehen schon in `netlify.toml`, also einfach auf **Deploy** klicken.
-3. **Kontaktformular aktivieren:** In Netlify unter *Site configuration → Forms* die **Form detection** einschalten. Unter *Forms → Form notifications* fügst du eine **E-Mail-Benachrichtigung** an `kaya.kaan.cr@gmail.com` hinzu. Danach landet jede Nachricht in deinem Postfach.
-4. Ab jetzt gilt: Datei ändern → auf GitHub hochladen → nach ca. 1 Minute ist die Seite online.
+### Variante A: Automatisch über GitHub (empfohlen)
+Einmal einrichten:
+1. Installiere **GitHub Desktop** (desktop.github.com) und melde dich mit deinem GitHub-Konto an.
+2. **File → Add Local Repository** → den Ordner `kaan-kaya-website` wählen → **Publish repository**.
+3. In Netlify im Projekt „kaankaya“: **Project configuration → Build & deploy → Continuous deployment → Link repository** → GitHub → `kaan-kaya-website` wählen. Die Einstellungen kommen aus `netlify.toml`.
 
-**Kostenlose Adresse:** Netlify gibt deiner Seite zuerst einen Zufallsnamen (z. B. `jolly-panda-123.netlify.app`). Ändere ihn unter *Site configuration → Site details → Change site name* auf **`kaankaya`**. Dann ist deine Website unter **https://kaankaya.netlify.app** erreichbar – kostenlos und mit HTTPS. Die Website übernimmt die Adresse automatisch für Google, Vorschaubilder und das PDF, du musst sonst nichts ändern.
+Danach gilt: Datei ändern → in GitHub Desktop **Commit** und **Push** → nach ca. 1–2 Minuten ist die Seite online.
 
-Deine alten Seiten (`minispiele.netlify.app` und `portfolio-kaankaya.netlify.app`) bleiben online – sie sind in den Case Studies verlinkt.
+### Variante B: Von Hand hochladen
+`npm run build` ausführen und den Ordner `dist` in Netlify unter **Deploys** in das Feld ganz unten ziehen.
 
----
+### Kontaktformular
+- **Forms → Form detection** muss eingeschaltet sein.
+- Benachrichtigung per E-Mail: **Forms → Submission notifications → Add notification → Email notification**.
+
+### Google & Statistik (optional)
+In `src/content/profil.yaml`:
+- `google_verifizierung`: Code aus der Google Search Console (HTML-Tag-Methode)
+- `goatcounter`: dein GoatCounter-Name für die Besucherstatistik (ohne Cookies)
 
 ## 5. Was automatisch passiert
 
