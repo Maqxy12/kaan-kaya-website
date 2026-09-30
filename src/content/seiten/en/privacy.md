@@ -22,7 +22,7 @@ If you write to me via the contact form or by email, I process your name, email 
 
 ## Browser storage
 
-The website stores a few settings directly in your browser (local storage): your colour mode (light/dark) and your best time in the reaction game. This data never leaves your device and is not sent to me. You can delete it in your browser at any time.
+The website stores a few settings directly in your browser (local storage): your colour mode (light/dark), your best time in the reaction game and your boxing timer settings. This data never leaves your device and is not sent to me. You can delete it in your browser at any time.
 
 ## Fonts
 

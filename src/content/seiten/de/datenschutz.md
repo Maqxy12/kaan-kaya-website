@@ -22,7 +22,7 @@ Wenn du mir über das Kontaktformular oder per E-Mail schreibst, verarbeite ich 
 
 ## Speicher im Browser
 
-Die Website speichert einzelne Einstellungen direkt in deinem Browser (lokaler Speicher): deinen Farbmodus (hell/dunkel) und deine Bestzeit im Reaktionsspiel. Diese Daten verlassen dein Gerät nie und werden nicht an mich übertragen. Du kannst sie jederzeit in deinem Browser löschen.
+Die Website speichert einzelne Einstellungen direkt in deinem Browser (lokaler Speicher): deinen Farbmodus (hell/dunkel), deine Bestzeit im Reaktionsspiel und deine Einstellungen im Box-Timer. Diese Daten verlassen dein Gerät nie und werden nicht an mich übertragen. Du kannst sie jederzeit in deinem Browser löschen.
 
 ## Schriften
 
